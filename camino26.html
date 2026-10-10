@@ -1,0 +1,1113 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Camino 26">
+<meta name="theme-color" content="#181D23">
+<title>Camino 26</title>
+<style>
+:root{--granite:#181D23;--g2:#212831;--g3:#2B333E;--arrow:#F2B705;--shell:#EDE6D8;
+ --moss:#7FA37E;--rust:#C4703F;--dim:#7C8794;--line:#333C48;--r:14px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}html,body{margin:0;padding:0;max-width:100%;overflow-x:hidden}
+body{background:var(--granite);color:var(--shell);
+ font:400 16px/1.5 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;
+ padding:env(safe-area-inset-top) 0 150px;-webkit-font-smoothing:antialiased;
+ overflow-wrap:break-word;word-break:break-word}
+.wrap{max-width:540px;margin:0 auto;
+ padding-left:max(16px,env(safe-area-inset-left));
+ padding-right:max(16px,env(safe-area-inset-right))}
+.hide{display:none!important}
+h2{font-size:11px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase;margin:0 0 10px;font-weight:600}
+h2 .c{float:right;letter-spacing:0;text-transform:none;font-weight:400}
+section{margin:0 0 22px}
+.card{background:var(--g2);border:1px solid var(--line);border-radius:var(--r);padding:14px;overflow:hidden}
+header{padding:20px 0 14px;border-bottom:1px solid var(--line);margin-bottom:18px}
+.eyebrow{font-size:11px;letter-spacing:.22em;color:var(--dim);text-transform:uppercase}
+.state{float:right;font-size:11px;letter-spacing:.05em}
+.state.saved{color:var(--moss)}.state.dirty{color:var(--arrow)}
+.nav{display:flex;gap:8px;margin-top:12px}
+.nav button{width:44px;height:38px;border-radius:9px;border:1px solid var(--line);background:var(--g2);color:var(--shell);font-size:17px}
+.nav select{flex:1;min-width:0;background:var(--g2);border:1px solid var(--line);color:var(--shell);border-radius:9px;padding:9px;font-size:16px}
+.stage{display:flex;align-items:baseline;gap:10px;margin-top:12px}
+.stage b{font-size:clamp(28px,9vw,36px);font-weight:800;letter-spacing:-.03em;color:var(--arrow);font-variant-numeric:tabular-nums}
+.stage span{font-size:15px}
+.route{margin-top:6px;font-size:14px;color:var(--dim);line-height:1.4}
+.tip{margin-top:10px;padding:9px 11px;border-left:3px solid var(--arrow);background:rgba(242,183,5,.07);font-size:13px;line-height:1.45;color:#E4D9BE}
+.todo{margin-top:10px;padding:10px 12px;border-radius:10px;background:rgba(127,163,126,.12);
+ border:1px solid rgba(127,163,126,.4);font-size:13.5px;line-height:1.5;color:#CFE2CE}
+.todo b{display:block;font-size:11px;letter-spacing:.16em;color:var(--moss);margin-bottom:6px}
+.todo div{margin:3px 0}
+.cor{margin-top:14px;padding:10px 12px;border-radius:10px;background:rgba(196,112,63,.12);
+ border:1px solid rgba(196,112,63,.4);font-size:12.5px;line-height:1.5;color:#E8CDBB}
+.cor b{color:var(--rust)}
+.cor>div{margin-top:5px}
+.adj{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.adj>span{font-size:12px;color:var(--dim)}
+.adjb{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.adjb button{flex:1 1 100px;height:40px;border-radius:9px;border:1px solid var(--line);
+ background:var(--g3);color:var(--shell);font-size:12.5px;font-weight:600}
+.adjb button:last-child{flex:0 0 76px;color:var(--dim)}
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px;margin-left:6px}
+.t-A{background:#4B6B4E;color:#DFF0DF}.t-B{background:#7A6320;color:#FFEEB8}
+.t-C{background:#7A4A32;color:#FFDCC9}.t-D{background:var(--g3);color:var(--dim)}
+.km{display:flex;align-items:center;gap:12px}
+.km input{flex:1;min-width:0;background:transparent;border:0;color:var(--arrow);font:800 clamp(32px,11vw,44px)/1 -apple-system,sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;text-align:center;padding:4px 0}
+.km input:focus{outline:none}
+.step{width:clamp(46px,13vw,56px);height:clamp(46px,13vw,56px);flex:none;border-radius:50%;border:1px solid var(--line);background:var(--g3);color:var(--shell);font-size:24px}
+.step:active{background:var(--arrow);color:#1B1B1B}
+.kmfoot{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:13px;color:var(--dim)}
+.asplan{border:1px solid var(--line);background:transparent;color:var(--arrow);padding:7px 13px;border-radius:9px;font-size:13px;font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{padding:8px 11px;border-radius:9px;border:1px solid var(--line);background:var(--g3);color:var(--dim);font-size:13px;font-weight:600}
+.chips button[aria-pressed=true]{background:var(--arrow);border-color:var(--arrow);color:#1B1B1B}
+.times{display:flex;gap:10px}.times label{flex:1 1 0;min-width:0;display:block}
+.times span,.fld span{display:block;font-size:12px;color:var(--dim);margin-bottom:5px;text-align:center}
+input[type=time],.fld input{width:100%;min-width:0;background:var(--g3);
+ border:1px solid var(--line);color:var(--shell);border-radius:10px;padding:11px;font-size:16px}
+input[type=time]{height:48px;padding:0 8px;text-align:center;font-variant-numeric:tabular-nums;
+ -webkit-appearance:none;appearance:none;line-height:normal}
+input[type=time]::-webkit-date-and-time-value{text-align:center;margin:0}
+input[type=time]::-webkit-calendar-picker-indicator{display:none}
+.dur{margin-top:10px;font-size:13px;color:var(--dim);text-align:center}
+.item{border-bottom:1px solid var(--line);padding:10px 0}
+.item:last-of-type{border-bottom:0}
+.item .l1{display:flex;gap:6px;align-items:center;flex-wrap:nowrap;max-width:100%}
+.item select{flex:0 0 96px;min-width:0;background:var(--g3);border:1px solid var(--line);color:var(--shell);border-radius:9px;padding:10px 4px;font-size:16px}
+.item .amt{flex:1;min-width:0;background:var(--g3);border:1px solid var(--line);color:var(--shell);border-radius:9px;padding:10px;font-size:17px;text-align:right;font-variant-numeric:tabular-nums}
+.item .cur{width:44px;flex:none;border-radius:9px;border:1px solid var(--line);background:var(--g3);color:var(--arrow);font-size:15px;font-weight:700;height:42px}
+.item .del{width:32px;flex:none;border:0;background:transparent;color:var(--rust);font-size:20px}
+.item .memo{width:100%;margin-top:7px;background:var(--g3);border:1px solid var(--line);border-radius:9px;color:var(--shell);padding:9px;font-size:16px}
+.dets{margin-top:8px;padding-left:9px;border-left:2px solid var(--line)}
+.det{display:flex;gap:6px;align-items:center;margin-bottom:6px;max-width:100%}
+.det .dn{flex:1;min-width:0;background:var(--g3);border:1px solid var(--line);color:var(--shell);border-radius:8px;padding:9px;font-size:16px}
+.det .da{width:84px;flex:none;background:var(--g3);border:1px solid var(--line);color:var(--shell);border-radius:8px;padding:9px;font-size:16px;text-align:right;font-variant-numeric:tabular-nums}
+.det .dx{width:30px;flex:none;border:0;background:transparent;color:var(--rust);font-size:18px}
+.adddet{margin-top:2px;background:transparent;border:0;color:var(--dim);font-size:12.5px;padding:5px 2px;text-align:left}
+.rcrow{display:flex;align-items:center;gap:8px;margin-top:8px}
+.rcbtn{border:1px dashed var(--line);background:transparent;color:var(--dim);
+ border-radius:9px;padding:8px 12px;font-size:12.5px;font-weight:600}
+.rcth{position:relative;width:56px;height:56px;flex:none;border-radius:9px;overflow:hidden;
+ background:var(--g3);border:1px solid var(--line);-webkit-touch-callout:none}
+.rcth img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.rcth .x{position:absolute;top:2px;right:2px;width:20px;height:20px;border-radius:50%;
+ border:0;background:rgba(0,0,0,.7);color:#fff;font-size:12px;line-height:1;padding:0}
+.rclbl{font-size:12px;color:var(--moss)}
+.item .amt[readonly]{color:var(--arrow);font-weight:700;background:#252D37}
+.additem{width:100%;margin-top:12px;height:46px;border-radius:10px;border:1px dashed var(--line);background:transparent;color:var(--arrow);font-size:14px;font-weight:600}
+.sum{display:flex;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);font-size:15px}
+.sum b{color:var(--arrow);font-variant-numeric:tabular-nums}
+.who{display:flex;gap:6px;margin-bottom:12px}
+.who button{flex:1;height:40px;border-radius:9px;border:1px solid var(--line);background:var(--g3);color:var(--dim);font-size:14px;font-weight:600}
+.who button[aria-pressed=true]{background:var(--moss);border-color:var(--moss);color:#12210F}
+.cond{display:flex;align-items:center;gap:8px;margin-bottom:9px;flex-wrap:wrap}
+.cond .nm{width:46px;flex:none;font-size:14px}
+.seg{display:flex;gap:5px;flex:1;min-width:180px}
+.seg button{flex:1;height:42px;border-radius:9px;border:1px solid var(--line);background:var(--g3);color:var(--dim);font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
+.seg button[aria-pressed=true]{background:var(--moss);border-color:var(--moss);color:#12210F}
+textarea{width:100%;background:var(--g3);border:1px solid var(--line);color:var(--shell);border-radius:10px;padding:12px;font:400 16px/1.6 inherit;min-height:160px;resize:vertical}
+textarea:focus,input:focus,select:focus{outline:2px solid var(--arrow);outline-offset:1px}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:7px}
+.mth{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--g3);border:1px solid var(--line)}
+.mth img,.mth video{width:100%;height:100%;object-fit:cover;display:block;
+ -webkit-touch-callout:none;pointer-events:none}
+.mth{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;
+ transition:transform .12s ease,box-shadow .12s ease}
+.mth.press{transform:scale(.94);box-shadow:0 0 0 2px var(--arrow)}
+.viewer{position:fixed;inset:0;background:#000;z-index:60;display:flex;flex-direction:column}
+.viewer .vhead{display:flex;justify-content:space-between;align-items:center;
+ padding:calc(env(safe-area-inset-top) + 10px) 14px 8px;color:var(--shell);font-size:13px}
+.viewer .vhead button{border:0;background:rgba(255,255,255,.14);color:#fff;
+ width:40px;height:40px;border-radius:50%;font-size:19px}
+.viewer .vbody{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:6px}
+.viewer .vslot{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;height:100%}
+.viewer img,.viewer video{max-width:100%;max-height:100%;object-fit:contain;display:block}
+.viewer .vcap{padding:12px 18px calc(env(safe-area-inset-bottom) + 16px);
+ color:#B9B2A4;font-size:13.5px;text-align:center;line-height:1.5}
+.viewer .vbody{position:relative}
+.vnav{position:absolute;top:50%;transform:translateY(-50%);width:48px;height:48px;
+ border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff;font-size:24px;
+ display:flex;align-items:center;justify-content:center;z-index:2}
+.vnav:disabled{opacity:.18}
+.vnav.prev{left:8px}.vnav.next{right:8px}
+.vdots{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;padding:0 18px 4px}
+.vdots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.28);display:block}
+.vdots i.on{background:var(--arrow);width:16px;border-radius:3px}
+.mth .x{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;border:0;background:rgba(0,0,0,.65);color:#fff;font-size:14px;line-height:1}
+.mth .vtag{position:absolute;left:5px;bottom:5px;font-size:10px;background:rgba(0,0,0,.7);padding:2px 6px;border-radius:4px;font-variant-numeric:tabular-nums}
+.mth.noposter{display:flex;align-items:center;justify-content:center}
+.mth.noposter::before{content:'▶';font-size:26px;color:var(--dim)}
+.mth .cap{position:absolute;left:0;right:0;bottom:0;font-size:10px;background:rgba(0,0,0,.6);padding:3px 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mbtns{display:flex;gap:9px;margin-top:11px}
+.mbtns label{flex:1;height:46px;border-radius:10px;border:1px dashed var(--line);color:var(--arrow);font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center}
+.credencial{display:grid;grid-template-columns:repeat(auto-fill,minmax(34px,1fr));gap:6px}
+.sello{aspect-ratio:1;border-radius:50%;border:1px dashed var(--line);display:flex;align-items:center;justify-content:center;font-size:10px;color:#4C5764;font-variant-numeric:tabular-nums}
+.sello.done{border:1px solid var(--arrow);background:var(--arrow);color:#1B1B1B;font-weight:800}
+.sello.off{background:var(--rust);border-color:var(--rust);color:#2A1206}
+.sello.today{box-shadow:0 0 0 2px var(--moss)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.kpi{background:var(--g2);border:1px solid var(--line);border-radius:var(--r);padding:13px}
+.kpi .k{font-size:11px;color:var(--dim)}
+.kpi .v{font-size:clamp(20px,6vw,26px);font-weight:800;font-variant-numeric:tabular-nums;margin-top:3px}
+.kpi .s{font-size:12px;color:var(--dim);margin-top:2px}
+.kpi.wide{grid-column:1/-1}
+.bar-outer{height:9px;background:var(--g3);border-radius:5px;overflow:hidden;margin-top:9px}
+.bar-in{height:100%;background:var(--arrow)}
+.legend{display:flex;gap:14px;font-size:11.5px;color:var(--dim);margin-top:8px;flex-wrap:wrap}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px}
+table.mini{width:100%;border-collapse:collapse;font-size:13.5px}
+table.mini{table-layout:fixed}table.mini td{padding:7px 0;border-bottom:1px solid var(--line);overflow-wrap:break-word}
+table.mini td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+table.mini tr:last-child td{border-bottom:0;font-weight:700;color:var(--arrow)}
+.picks{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:9px}
+.picks button{padding:13px 10px;border-radius:11px;border:1px solid var(--line);background:var(--g2);color:var(--shell);font-size:13.5px;font-weight:600;text-align:left;line-height:1.35}
+.picks button[aria-pressed=true]{border-color:var(--arrow);background:rgba(242,183,5,.1);color:var(--arrow)}
+.picks button small{display:block;font-weight:400;font-size:11px;color:var(--dim);margin-top:3px}
+#out{min-height:200px;font:400 16px/1.5 ui-monospace,Menlo,monospace}
+.acts{display:flex;gap:9px;margin-top:11px}
+.acts button{flex:1;height:48px;border-radius:11px;border:1px solid var(--line);background:var(--g3);color:var(--shell);font-size:15px;font-weight:600}
+.acts button.primary{background:var(--arrow);color:#1B1B1B;border-color:var(--arrow)}
+.hint{font-size:12.5px;color:var(--dim);line-height:1.55;margin:11px 0 0}
+.danger{color:var(--rust)}
+.savebar{position:fixed;left:0;right:0;bottom:calc(68px + env(safe-area-inset-bottom));z-index:5;padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}
+.savebar .in{max-width:540px;margin:0 auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+ background:var(--arrow);color:#1B1B1B;border-radius:12px;padding:9px 9px 9px 14px;
+ box-shadow:0 6px 20px rgba(0,0,0,.4)}
+.savebar .in span{flex:1 1 90px;min-width:0;font-size:13.5px;font-weight:700}
+.savebar button{height:40px;border-radius:9px;border:0;font-size:14px;font-weight:700;padding:0 13px;flex:0 0 auto}
+#doSave{background:#1B1B1B;color:var(--arrow)}
+#undo{background:rgba(0,0,0,.14);color:#1B1B1B}
+.tabbar{position:fixed;left:0;right:0;bottom:0;background:rgba(24,29,35,.94);backdrop-filter:blur(12px);border-top:1px solid var(--line);z-index:6;padding-top:9px;padding-bottom:calc(9px + env(safe-area-inset-bottom));padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}
+.tabbar .inner{max-width:540px;margin:0 auto;display:flex;gap:8px}
+.tabbar button{flex:1;height:50px;border-radius:12px;border:0;background:transparent;color:var(--dim);font-size:13px;font-weight:600}
+.tabbar button[aria-selected=true]{background:var(--g3);color:var(--arrow)}
+.mask{position:fixed;inset:0;background:rgba(0,0,0,.62);z-index:50;display:flex;
+ align-items:center;justify-content:center;padding:22px}
+.modal{width:100%;max-width:400px;background:var(--g2);border:1px solid var(--line);
+ border-radius:16px;padding:18px;box-shadow:0 18px 50px rgba(0,0,0,.55)}
+.modal .msg{font-size:15.5px;line-height:1.55;white-space:pre-line;margin-bottom:14px}
+.modal input{width:100%;background:var(--g3);border:1px solid var(--line);color:var(--shell);
+ border-radius:10px;padding:12px;font-size:16px;margin-bottom:14px}
+.modal .btns{display:flex;gap:9px;flex-wrap:wrap}
+.modal .btns button{flex:1 1 110px;height:48px;border-radius:11px;border:1px solid var(--line);
+ background:var(--g3);color:var(--shell);font-size:15px;font-weight:600}
+.modal .btns button.pri{background:var(--arrow);color:#1B1B1B;border-color:var(--arrow)}
+.modal .btns button.dgr{background:var(--rust);color:#fff;border-color:var(--rust)}
+.modal.tall{max-height:88vh;overflow:auto}
+.rcrow{flex-wrap:wrap}
+.owners{display:flex;gap:6px;margin-top:10px}
+.owners button{flex:1;height:34px;border-radius:9px;border:1px solid var(--line);background:var(--g3);color:var(--dim);font-size:13px;font-weight:600}
+.owners button[aria-pressed=true]{background:var(--shell);color:#1B1B1B;border-color:var(--shell)}
+.ownnote{margin-top:6px;font-size:12px;color:var(--arrow);line-height:1.45}
+.ownnote:empty{display:none}
+.sync{float:right;margin-right:10px;font-size:11px;letter-spacing:.02em;text-transform:none;color:var(--dim);background:none;border:0;padding:0}
+.sync.ok{color:var(--moss)}.sync.warn{color:var(--arrow)}.sync.err{color:var(--rust)}
+.lodge{margin-top:6px;font-size:13px;color:var(--shell);line-height:1.45}
+.fld2{display:block;margin:0 0 10px}
+.fld2 span{display:block;font-size:12px;color:var(--dim);margin-bottom:4px}
+.fld2 input,.fld2 select,.fld2 textarea{width:100%;min-width:0;background:var(--g3);border:1px solid var(--line);color:var(--shell);border-radius:9px;padding:9px 10px;font-size:16px;font-family:inherit}
+.fld2 textarea{min-height:64px;resize:vertical}
+.row2{display:flex;gap:8px}.row2>.fld2{flex:1;min-width:0}
+.setst{font-size:13px;line-height:1.6;color:var(--shell);margin-bottom:12px;white-space:pre-line}
+.ebar{display:flex;align-items:baseline;gap:10px}
+.ebar .ttl{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ebar .state,.ebar .sync{float:none;margin:0;white-space:nowrap;flex:none}
+.owners button{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 6px}
+.minibtn{margin-left:6px;height:28px;padding:0 10px;border-radius:7px;border:0;background:var(--moss);color:#12210F;font-weight:700}
+.item .l2{display:flex;gap:6px;margin-top:7px}
+.item .l2 .pm{flex:0 0 112px;min-width:0;background:var(--g3);border:1px solid var(--line);color:var(--shell);border-radius:9px;padding:9px 4px;font-size:16px}
+.item .l2 .memo{flex:1;min-width:0;margin-top:0}
+.closedtag{margin-left:auto;font-size:12px;font-weight:800;color:#12210F;background:var(--moss);border-radius:6px;padding:3px 9px}
+.big{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.big b{font-size:clamp(30px,10vw,40px);font-weight:800;color:var(--arrow);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.big span{font-size:13px;color:var(--dim)}
+.budget{margin-top:10px;font-size:13px}
+.bline{display:flex;justify-content:space-between;margin-top:6px;color:var(--dim)}
+.over{color:var(--rust)}.ok{color:var(--moss)}.dim{color:var(--dim)}
+.diff{margin-top:2px;font-size:14px;font-weight:700;min-height:1px}
+.cashtab tr:last-child td{color:var(--shell)}
+.srow{display:flex;gap:12px;padding:11px 2px;border-bottom:1px solid var(--line);cursor:pointer}
+.srow:last-child{border-bottom:0}
+.srow .sd{flex:0 0 52px;text-align:center;line-height:1.2}
+.srow .sd b{display:block;font-size:15px;white-space:nowrap;letter-spacing:-.02em;color:var(--arrow);font-variant-numeric:tabular-nums}
+.srow .sd span{font-size:12px;color:var(--dim)}
+.srow .sm{flex:1;min-width:0;font-size:14px}
+.srow .ss{font-size:12px;color:var(--dim);margin-top:2px}
+.tabbar .inner{gap:4px}.tabbar button{font-size:13px;padding:0}
+.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+.fld2 input[type=date]{font-size:15px;padding:9px 6px;min-height:42px}
+.kmline{font-size:13px;color:var(--arrow);min-height:18px;margin:-4px 0 10px}
+#rVars select,.modal select,#rStart{width:100%;min-width:0}
+.dist{margin-top:2px;color:var(--arrow)}
+.dist:empty{display:none}
+.srow .cum{color:var(--arrow)}
+.dist .act,.srow .act{color:#8FC79A}
+.dtab th{font-size:12px;color:var(--dim);font-weight:600;text-align:right;padding-bottom:4px}
+.dtab th:first-child{text-align:left}
+.dtab td:not(:first-child){text-align:right;font-variant-numeric:tabular-nums}
+.story p{margin:0 0 6px;font-size:14.5px;line-height:1.55}
+.story p:last-child{margin-bottom:10px}
+.story b.ok{color:var(--moss)}.story b.over{color:var(--rust)}
+table.nosum tr:last-child td{font-weight:400;color:inherit}
+table.dtab td,table.dtab th{padding:7px 2px}
+table.dtab th{font-size:11.5px}
+table.dtab{font-size:13px}
+#tCat td:first-child,#tDist td:first-child{width:30%}
+.catgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 8px}
+.catgrid .fld2 span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tabbar .inner{gap:2px}.tabbar button{font-size:13px;padding:0;min-width:0}
+.bline{flex-wrap:wrap;gap:2px 10px}
+.story b.hl{color:var(--arrow)}
+.lhint{display:block;font-size:12px;color:var(--dim);margin-top:4px;min-height:0}
+.lhint:empty{display:none}
+table.nosum tr:last-child td{font-weight:400;color:inherit}
+.tabbar .inner{gap:6px}.tabbar button{font-size:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header id="hdr">
+  <div class="eyebrow ebar"><span class="ttl">Camino 26 Lite</span><span class="state saved" id="st">저장됨</span></div>
+  <div class="nav"><button id="prev">‹</button><select id="pick"></select><button id="next">›</button></div>
+  <div class="stage"><b id="dno"></b><span id="dlabel"></span></div>
+  <div class="lodge" id="place"></div>
+  <div class="todo" id="todo"></div>
+</header>
+
+<div id="p-exp">
+  <section><h2>오늘 지출 <span class="c" id="icount"></span></h2><div class="card">
+    <div id="items"></div>
+    <button class="additem" id="additem">＋ 지출 항목 추가</button>
+    <div class="sum"><span>오늘 합계</span><b id="total">€0.00</b></div>
+    <div class="budget" id="bud"></div>
+  </div></section>
+  <section><h2>현금 점검 (유로 현금)</h2><div class="card">
+    <div class="row2">
+      <label class="fld2"><span>시작 현금 €</span><input id="cStart" type="text" inputmode="decimal"></label>
+      <label class="fld2"><span>오늘 인출·환전 €</span><input id="cAdd" type="text" inputmode="decimal" placeholder="0"></label>
+    </div>
+    <table class="mini cashtab" id="cCash"></table>
+    <label class="fld2" style="margin-top:12px"><span>지갑에 실제로 남은 현금 €</span><input id="cActual" type="text" inputmode="decimal" placeholder="세어서 입력"></label>
+    <div class="diff" id="cDiff"></div>
+  </div></section>
+  <div class="acts"><button id="shareDay">하루 요약 공유</button></div>
+  <p class="hint">금액은 한 사람 기준입니다. € 단추를 누르면 ₩로 바뀝니다. 다 적으면 아래 노란 바의 「저장」을 누르십시오. 시작 현금을 비워 두면 전날 남은 현금을 이어받습니다.</p>
+</div>
+
+<div id="p-sched" class="hide">
+  <header><div class="eyebrow">일정</div>
+    <div class="route" style="margin-top:8px">카미노 프랑세스 (Camino Francés) 경유지 목록에서 날짜별 출발지·도착지를 고르면 거리가 계산됩니다.</div></header>
+  <section><h2>날짜 <span class="c" id="sCount"></span></h2><div class="card" id="sList"></div>
+    <div class="acts"><button id="sAdd">＋ 날짜 하나 추가</button></div></section>
+  <section><h2>빠른 설정</h2><div class="card">
+    <div class="row2">
+      <label class="fld2"><span>시작일</span><input id="sFrom" type="date"></label>
+      <label class="fld2"><span>마지막 날</span><input id="sTo" type="date"></label>
+    </div>
+    <div class="acts" style="margin:0 0 14px"><button id="sRange">이 기간으로 맞추기</button></div>
+    <div class="row2">
+      <label class="fld2"><span>어디서 시작</span><select id="rStart"></select></label>
+      <label class="fld2"><span>그날 날짜</span><input id="rDate" type="date"></label>
+    </div>
+    <div class="acts" style="margin:0"><button id="rFill">표준 일정으로 채우기</button></div>
+    <p class="hint">표준 34단계(하루 한 단계)로 빈 날만 채웁니다. 이미 적은 날은 그대로 둡니다.</p>
+  </div></section>
+  <section><h2>갈림길</h2><div class="card"><div id="rVars"></div><div class="setst" id="rSum" style="margin:0"></div></div></section>
+  <p class="hint" id="rSrc"></p>
+</div>
+
+<div id="p-set" class="hide">
+  <header><div class="eyebrow">설정</div><div class="hint" style="margin-top:6px" id="verlbl"></div></header>
+  <section><h2>여행 누계</h2><div class="card"><table class="mini nosum" id="tSum"></table></div></section>
+  <section><h2>기본값</h2><div class="card">
+    <div class="row2">
+      <label class="fld2"><span>1일 예산 €</span><input id="setBudget" type="text" inputmode="decimal" placeholder="예: 60"></label>
+      <label class="fld2"><span>출발 때 현금 €</span><input id="setCash0" type="text" inputmode="decimal" placeholder="예: 200"></label>
+    </div>
+    <label class="fld2"><span>환율 (₩ / €1)</span><input id="setRate" type="text" inputmode="decimal"></label>
+    <label class="fld2"><span>결제 수단 (쉼표로 구분, 첫째가 기본값)</span><input id="setPm" type="text"></label>
+    <div class="acts" style="margin-top:0"><button id="setSave">저장</button></div>
+  </div></section>
+  <section><h2>백업 — 이 폰에만 저장됩니다</h2><div class="card">
+    <div class="setst" id="bkst"></div>
+    <div class="acts" style="margin-top:0"><button class="primary" id="fullBk">백업 파일 저장 (영수증 포함)</button></div>
+    <div class="acts"><button id="restoreBtn">백업 파일 불러오기</button></div>
+    <input id="fRestore" type="file" accept=".json,application/json" hidden>
+    <p class="hint">기록은 이 폰의 브라우저 안에만 있고 어디로도 전송되지 않습니다. 폰을 잃어버리거나 브라우저 데이터를 지우면 사라지니, <b>이틀에 한 번</b> 백업 파일을 iCloud Drive에 저장해 두십시오.</p>
+  </div></section>
+  <section><h2>보내기</h2><div class="card">
+    <div class="acts" style="margin-top:0"><button id="rptBk">여행 요약 공유</button><button id="fbBtn">의견 보내기</button></div>
+    <p class="hint">「의견 보내기」는 적은 내용을 메시지·메일 앱으로 넘깁니다. 받는 사람은 직접 고르십시오.</p>
+  </div></section>
+  <section><h2>앱 정보</h2><div class="card"><div class="setst" id="appst" style="margin:0"></div></div></section>
+</div>
+</div>
+
+<div class="savebar hide" id="savebar"><div class="in">
+  <span>저장하지 않은 변경</span><button id="undo">되돌리기</button><button id="doSave">저장</button>
+</div></div>
+
+<div class="tabbar"><div class="inner">
+  <button data-t="exp" aria-selected="true">지출</button>
+  <button data-t="sched" aria-selected="false">일정</button>
+  <button data-t="set" aria-selected="false">설정</button>
+</div></div>
+
+<script>
+/* ── 카미노 프랑세스 경유지 (출처: alberguescaminosantiago.com 단계별 거리, 칼사다 로마나는 senditur.com 대조)
+   [스페인어 이름, 한글, 앞 마을에서 km]  · 거리는 참고값(자료마다 수백 m 차이) */
+var ROUTE_SRC="경유지·거리: alberguescaminosantiago.com, senditur.com (2026-10 확인, 참고값)";
+var R_MAIN=[
+ ["Saint-Jean-Pied-de-Port","생장피에드포르",0],
+ ["@V1"],
+ ["Roncesvalles","론세스바예스",0],
+ ["Burguete","부르게테",3.0],["Espinal","에스피날",3.6],["Viscarret","비스카렛",4.8],["Linzoáin","린소아인",2.0],["Zubiri","수비리",8.4],
+ ["Ilarratz","일라라츠",2.8],["Larrasoaña","라라소아냐",2.7],["Akerreta","아케레타",0.6],["Zuriáin","수리아인",3.4],["Zabaldika","사발디카",3.2],
+ ["Arre","아레",3.6],["Villava","비야바",0.3],["Burlada","부를라다",1.2],["Pamplona","팜플로나",3.4],
+ ["Cizur Menor","시수르 메노르",4.8],["Zariquiegui","사리키에기",6.4],["Uterga","우테르가",6.0],["Muruzábal","무루사발",2.8],["Obanos","오바노스",1.8],["Puente la Reina","푸엔테 라 레이나",2.4],
+ ["Mañeru","마녜루",5.6],["Cirauqui","시라우키",2.4],["Lorca","로르카",5.0],["Villatuerta","비야투에르타",4.8],["Estella","에스테야",4.0],
+ ["Ayegui","아예기",1.8],["Azqueta","아스케타",5.8],["Villamayor de Monjardín","비야마요르 데 몬하르딘",2.0],["Los Arcos","로스 아르코스",12.6],
+ ["Sansol","산솔",7.0],["Torres del Río","토레스 델 리오",0.8],["Viana","비아나",11.0],["Logroño","로그로뇨",9.6],
+ ["Navarrete","나바레테",13.0],["Ventosa","벤토사",7.8],["Nájera","나헤라",9.6],
+ ["Azofra","아소프라",5.8],["Cirueña","시루에냐",9.6],["Santo Domingo de la Calzada","산토 도밍고 데 라 칼사다",5.8],
+ ["Grañón","그라뇬",6.2],["Redecilla del Camino","레데시야 델 카미노",4.0],["Castildelgado","카스틸델가도",2.0],["Viloria de Rioja","빌로리아 데 리오하",2.0],["Villamayor del Río","비야마요르 델 리오",3.4],["Belorado","벨로라도",5.0],
+ ["Tosantos","토산토스",4.8],["Villambistia","비얌비스티아",1.8],["Espinosa del Camino","에스피노사 델 카미노",1.8],["Villafranca Montes de Oca","비야프랑카 몬테스 데 오카",3.6],["San Juan de Ortega","산 후안 데 오르테가",12.4],
+ ["Agés","아헤스",3.8],["Atapuerca","아타푸에르카",2.6],["Cardeñuela Riopico","카르데뉴엘라 리오피코",6.6],["Orbaneja Riopico","오르바네하 리오피코",2.0],["Villafría","비야프리아",3.6],["Burgos","부르고스",7.7],
+ ["Tardajos","타르다호스",9.8],["Rabé de las Calzadas","라베 데 라스 칼사다스",2.0],["Hornillos del Camino","오르니요스 델 카미노",8.0],
+ ["Arroyo San Bol","아로요 산 볼",5.8],["Hontanas","온타나스",5.2],["Convento de San Antón","산 안톤 수도원",6.0],["Castrojeriz","카스트로헤리스",3.8],
+ ["Itero de la Vega","이테로 데 라 베가",11.6],["Boadilla del Camino","보아디야 델 카미노",8.0],["Frómista","프로미스타",5.8],
+ ["Población de Campos","포블라시온 데 캄포스",3.6],["Revenga de Campos","레벤가 데 캄포스",3.8],["Villarmentero de Campos","비야르멘테로 데 캄포스",2.2],["Villalcázar de Sirga","비얄카사르 데 시르가",4.2],["Carrión de los Condes","카리온 데 로스 콘데스",5.8],
+ ["Calzadilla de la Cueza","칼사디야 데 라 쿠에사",17.2],["Ledigos","레디고스",6.2],
+ ["Terradillos de los Templarios","테라디요스 데 로스 템플라리오스",3.2],["Moratinos","모라티노스",3.4],["San Nicolás del Real Camino","산 니콜라스 델 레알 카미노",2.8],["Sahagún","사아군",6.8],
+ ["Calzada del Coto","칼사다 델 코토",5.2],
+ ["@V2"],
+ ["Mansilla de las Mulas","만시야 데 라스 물라스",0],
+ ["Villamoros de Mansilla","비야모로스 데 만시야",4.5],["Puente Villarente","푸엔테 비야렌테",1.6],["Arcahueja","아르카우에하",4.5],["Valdelafuente","발델라푸엔테",1.5],["Puente Castro","푸엔테 카스트로",3.5],["León","레온",3.0],
+ ["Trobajo del Camino","트로바호 델 카미노",4.2],["La Virgen del Camino","라 비르헨 델 카미노",4.0],
+ ["@V3"],
+ ["Hospital de Órbigo","오스피탈 데 오르비고",0],
+ ["Villares de Órbigo","비야레스 데 오르비고",3.0],["Santibáñez de Valdeiglesias","산티바녜스 데 발데이글레시아스",2.4],["San Justo de la Vega","산 후스토 데 라 베가",8.2],["Astorga","아스토르가",3.6],
+ ["Valdeviejas","발데비에하스",1.7],["Murias de Rechivaldo","무리아스 데 레치발도",4.2],["Santa Catalina de Somoza","산타 카탈리나 데 소모사",4.2],["El Ganso","엘 간소",4.3],["Rabanal del Camino","라바날 델 카미노",6.9],
+ ["Foncebadón","폰세바돈",5.5],["Manjarín","만하린",4.3],["El Acebo","엘 아세보",7.5],["Riego de Ambrós","리에고 데 암브로스",3.1],["Molinaseca","몰리나세카",6.8],["Campo","캄포",4.0],["Ponferrada","폰페라다",3.8],
+ ["Columbrianos","콜룸브리아노스",5.4],["Fuentesnuevas","푸엔테스누에바스",2.3],["Camponaraya","캄포나라야",2.2],["Cacabelos","카카벨로스",5.8],["Pieros","피에로스",2.4],["Valtuille de Arriba","발투이예 데 아리바",1.9],["Villafranca del Bierzo","비야프랑카 델 비에르소",4.8],
+ ["@V4"],
+ ["Trabadelo","트라바델로",0],
+ ["La Portela de Valcarce","라 포르텔라 데 발카르세",4.5],["Ambasmestas","암바스메스타스",1.2],["Vega de Valcarce","베가 데 발카르세",1.6],["Ruitelán","루이텔란",2.2],["Las Herrerías","라스 에레리아스",1.9],["La Faba","라 파바",2.6],["La Laguna de Castilla","라 라구나 데 카스티야",2.5],["O Cebreiro","오 세브레이로",2.3],
+ ["Liñares","리냐레스",3.2],["Hospital da Condesa","오스피탈 다 콘데사",3.2],["Alto do Poio","알토 도 포이오",3.0],["Fonfría","폰프리아",3.7],["O Biduedo","오 비두에도",2.4],["Fillobal","피요발",2.9],["Pasantes","파산테스",2.3],["Triacastela","트리아카스텔라",1.5],
+ ["@V5"],
+ ["Aguiada","아기아다",0],["Sarria","사리아",4.5],
+ ["Barbadelo","바르바델로",4.3],["Morgade","모르가데",7.4],["Ferreiros","페레이로스",1.0],["A Pena","아 페냐",1.0],["Mercadoiro","메르카도이로",3.2],["Vilachá","빌라차",3.0],["Portomarín","포르토마린",2.7],
+ ["Toxibó","토시보",4.8],["Gonzar","곤사르",3.5],["Castromaior","카스트로마이오르",1.4],["Hospital da Cruz","오스피탈 다 크루스",2.3],["Ventas de Narón","벤타스 데 나론",2.0],["Ligonde","리곤데",3.4],["Airexe","아이레세",0.7],["Portos","포르토스",2.0],["Lestedo","레스테도",0.6],["Palas de Rei","팔라스 데 레이",5.0],
+ ["San Xulián do Camiño","산 술리안 도 카미뇨",3.2],["Pontecampaña","폰테캄파냐",1.2],["Casanova","카사노바",1.2],["O Coto","오 코토",3.0],["Leboreiro","레보레이로",0.6],["Furelos","푸렐로스",4.0],["Melide","멜리데",1.4],
+ ["Boente","보엔테",5.8],["Castañeda","카스타녜다",2.2],["Ribadiso","리바디소",3.2],["Arzúa","아르수아",2.8],
+ ["Burres","부레스",4.6],["Salceda","살세다",6.2],["A Brea","아 브레아",2.2],["Santa Irene","산타 이레네",3.6],["A Rúa","아 루아",1.5],["O Pedrouzo","오 페드로우소",1.0],
+ ["Amenal","아메날",3.2],["San Paio","산 파이오",4.2],["Lavacolla","라바코야",2.4],["Vilamaior","빌라마이오르",1.3],["San Marcos","산 마르코스",3.7],["Monte do Gozo","몬테 도 고소",0.6],["Santiago de Compostela","산티아고 데 콤포스텔라",4.1]
+];
+/* 갈림길: 각 경로의 마을 목록 (마지막 km = 합류 지점까지 거리) */
+var R_VAR={
+ V1:{name:"생장 (Saint-Jean-Pied-de-Port) → 론세스바예스 (Roncesvalles)",def:"a",opts:{
+  a:{label:"나폴레옹 길 (Route Napoléon) — 오리손 (Orisson) 경유",towns:[["Uhart-Cize","위아르시즈",0.8],["Huntto","훈토",3.2],["Orisson","오리손",3.5]],join:17.2},
+  b:{label:"발카를로스 길 (Valcarlos) — 국도변",towns:[["Arnéguy","아르네기",8.2],["Valcarlos","발카를로스",3.2]],join:10.6}}},
+ V2:{name:"사아군 (Sahagún) 이후",def:"a",opts:{
+  a:{label:"레알 카미노 (Real Camino) — 엘 부르고 라네로 (El Burgo Ranero)",towns:[["Bercianos del Real Camino","베르시아노스 델 레알 카미노",6.2],["El Burgo Ranero","엘 부르고 라네로",7.5],["Reliegos","렐리에고스",12.6]],join:6.2},
+  b:{label:"칼사다 로마나 (Calzada Romana) — 칼사디야 데 로스 에르마니요스 (Calzadilla de los Hermanillos)",towns:[["Calzadilla de los Hermanillos","칼사디야 데 로스 에르마니요스",8.6]],join:23.9}}},
+ V3:{name:"레온 (León) 이후",def:"a",opts:{
+  a:{label:"비야단고스 (Villadangos del Páramo) — 국도변",towns:[["Valverde de la Virgen","발베르데 데 라 비르헨",4.2],["San Miguel del Camino","산 미겔 델 카미노",1.6],["Villadangos del Páramo","비야단고스 델 파라모",7.2],["San Martín del Camino","산 마르틴 델 카미노",4.5]],join:6.6},
+  b:{label:"비야르 데 마사리페 (Villar de Mazarife)",towns:[["Fresno del Camino","프레스노 델 카미노",2.4],["Oncina de la Valdoncina","온시나 데 라 발돈시나",1.5],["Chozas de Abajo","초사스 데 아바호",5.6],["Villar de Mazarife","비야르 데 마사리페",5.6],["Villavante","비야반테",9.8]],join:5.1}}},
+ V4:{name:"비야프랑카 델 비에르소 (Villafranca del Bierzo) 이후",def:"a",opts:{
+  a:{label:"계곡 길 — 페레헤 (Pereje)",towns:[["Pereje","페레헤",5.7]],join:4.0},
+  b:{label:"프라델라 산길 (Pradela)",towns:[["Pradela","프라델라",8.7]],join:3.5}}},
+ V5:{name:"트리아카스텔라 (Triacastela) → 사리아 (Sarria)",def:"a",opts:{
+  a:{label:"산 실 (San Xil) 경유 — 짧은 길",towns:[["A Balsa","아 발사",1.9],["San Xil","산 실",1.8],["Montán","몬탄",3.0],["Furela","푸렐라",3.2],["Pintín","핀틴",1.2],["Calvor","칼보르",1.6]],join:0.6},
+  b:{label:"사모스 (Samos) 경유 — 수도원 (Mosteiro de Samos)",towns:[["San Cristovo do Real","산 크리스토보 도 레알",4.4],["Samos","사모스",5.6],["Gorolfe","고롤페",5.1],["Sivil","시빌",3.3],["Perros","페로스",1.3]],join:0.6}}}
+};
+/* 표준 일정 (같은 출처의 34단계). 갈림길 선택에 따라 레온→아스토르가 구간 숙박지가 바뀐다 */
+var R_STAGES_A=["Saint-Jean-Pied-de-Port","Roncesvalles","Zubiri","Pamplona","Puente la Reina","Estella","Los Arcos","Logroño","Nájera","Santo Domingo de la Calzada","Belorado","San Juan de Ortega","Burgos","Hornillos del Camino","Castrojeriz","Frómista","Carrión de los Condes","Ledigos","Sahagún","El Burgo Ranero","Mansilla de las Mulas","León","Villadangos del Páramo","Astorga","Rabanal del Camino","Ponferrada","Villafranca del Bierzo","O Cebreiro","Triacastela","Sarria","Portomarín","Palas de Rei","Arzúa","O Pedrouzo","Santiago de Compostela"];
+function routeChoice(){var c=(SET.route||{});var r={};Object.keys(R_VAR).forEach(function(k){r[k]=c[k]||R_VAR[k].def});return r}
+/* 선택한 경로의 마을 목록 → [{es,ko,km(누적)}] */
+function routeTowns(){
+ var ch=routeChoice(),out=[],cum=0,pend=0;
+ R_MAIN.forEach(function(t){
+  if(t[0].charAt(0)==="@"){var v=R_VAR[t[0].slice(1)].opts[ch[t[0].slice(1)]];
+   v.towns.forEach(function(x){cum+=x[2];out.push({es:x[0],ko:x[1],km:Math.round(cum*10)/10})});pend=v.join;return}
+  cum+=(pend||t[2]);pend=0;out.push({es:t[0],ko:t[1],km:Math.round(cum*10)/10});
+ });
+ return out;
+}
+function townLabel(t){return t.ko+" · "+t.es}
+function townByName(name,list){list=list||routeTowns();for(var i=0;i<list.length;i++)if(list[i].es===name||list[i].ko===name||townLabel(list[i])===name)return list[i];return null}
+function legKm(from,to){var L=routeTowns(),a=townByName(from,L),b=townByName(to,L);if(!a||!b)return null;return Math.round(Math.abs(b.km-a.km)*10)/10}
+function standardStages(){
+ var ch=routeChoice(),S=R_STAGES_A.slice();
+ if(ch.V2==="b")S[S.indexOf("El Burgo Ranero")]="Calzadilla de los Hermanillos";
+ if(ch.V3==="b")S[S.indexOf("Villadangos del Páramo")]="Villar de Mazarife";
+ return S;
+}
+/* 어느 경로에 있든 이름으로 찾기 (표시용) */
+var R_ALL=null;
+function townAny(name){
+ if(!name)return null;
+ if(!R_ALL){R_ALL=[];R_MAIN.forEach(function(t){if(t[0].charAt(0)!=="@")R_ALL.push({es:t[0],ko:t[1]})});
+  Object.keys(R_VAR).forEach(function(k){var o=R_VAR[k].opts;Object.keys(o).forEach(function(j){o[j].towns.forEach(function(x){R_ALL.push({es:x[0],ko:x[1]})})})})}
+ for(var i=0;i<R_ALL.length;i++)if(R_ALL[i].es===name||R_ALL[i].ko===name)return R_ALL[i];return null}
+/* 고유 지명: 한글 (원문) */
+function pn(s){var t=townAny(s);return t?t.ko+" ("+t.es+")":(s||"")}
+function pnShort(s){var t=townAny(s);return t?t.ko:(s||"")}
+function dayKm(x){return x&&x.from&&x.to?legKm(x.from,x.to):null}
+function legTxt(x){var k=dayKm(x);return k==null?"":k.toFixed(1)+"km"}
+function routeLine(x){if(!x||!(x.from||x.to))return "";var k=legTxt(x);return (pn(x.from)||"…")+" → "+(pn(x.to)||"…")+(k?" · "+k:"")}
+/* ── 거리 기록: 계획(경유지 목록) · 실제(마감 탭에 적은 이동거리) ── */
+function r1(v){return Math.round(v*10)/10}
+function f1(v){return r1(v).toFixed(1)}
+function planKm(d){return dayKm(dayInfo(d))}
+/* 실제: 그날 기록의 walk (작성 중인 화면 o가 있으면 그 값). v1.2.0에서 일정에 적은 값도 이어받음 */
+function recOf(d,o){return (o&&d===CD)?o:cache[d]}
+/* 실제: ① 적은 이동거리 ② 실제 출발·도착이 목록에 있으면 그 사이 거리 ③ v1.2.0 일정에 적은 값 */
+function actKm(d,o){var r=recOf(d,o);if(r&&has(r.walk))return num(r.walk);
+ if(r&&r.af&&r.at){var k=legKm(r.af,r.at);if(k!=null)return k}
+ var x=dayInfo(d);return x&&has(x.walk)?num(x.walk):null}
+function planCum(d){var s=0,n=0;SCHED.days.forEach(function(y){if(y.date<=d){var k=dayKm(y);if(k!=null){s+=k;n++}}});return {km:r1(s),n:n}}
+function actCum(d,o){var s=0,n=0;SCHED.days.forEach(function(y){if(y.date<=d){var k=actKm(y.date,o);if(k!=null){s+=k;n++}}});return {km:r1(s),n:n}}
+/* 목적지(산티아고)까지: 그날까지 마지막으로 도착한 곳 — 실제 도착지가 목록에 있으면 그것, 없으면 계획 도착지 */
+function leftKm(d,o){var L=routeTowns(),last=L[L.length-1],r=null;
+ SCHED.days.forEach(function(y){if(y.date>d)return;var rc=recOf(y.date,o),t=rc&&rc.at?townByName(rc.at,L):null;
+  if(!t&&y.to)t=townByName(y.to,L);if(t)r=r1(last.km-t.km)});return r}
+function distInfo(d,o){return {p:planKm(d),pc:planCum(d),a:actKm(d,o),ac:actCum(d,o),l:leftKm(d,o)}}
+/* 한 줄 요약 (마감 요약·보고용) */
+function distLine(d,o){var I=distInfo(d,o),P=[];
+ if(I.pc.n)P.push("계획 "+(I.p!=null?f1(I.p)+"km":"—")+" (누적 "+f1(I.pc.km)+")");
+ if(I.ac.n)P.push("실제 "+(I.a!=null?f1(I.a)+"km":"—")+" (누적 "+f1(I.ac.km)+")");
+ if(I.l!=null&&I.pc.n)P.push(I.l>0?"산티아고 (Santiago)까지 "+f1(I.l)+"km":"산티아고 (Santiago) 도착");
+ return P.join(" · ")}
+
+/* ════════ Camino 26 Lite — 1인 지출 · 현금 점검 · 일정 (폰 안에서만 쓰는 단독 앱) ════════ */
+var C26VER="3.1.0", APPDATE="2026-10-10";
+var TIERS2=[["","—"],["PUB","공영 알베르게"],["PRV","사설 알베르게"],["DON","도나티보 (기부제)"],["REL","종교계 숙소"],["HTL","호텔·펜션"],["NONE","숙박 없음"]];
+var BOOK2=[["","—"],["미정","미정"],["예약함","예약함"],["현장 구함","현장에서 구함"]];
+var BMETH2=[["","—"],["BK","부킹닷컴"],["WA","WhatsApp"],["MAIL","e-mail"],["ETC","기타"]];
+function pick2(L,k){for(var i=0;i<L.length;i++)if(L[i][0]===k)return L[i][1];return k||""}
+function bookTxt(x){return x.bs?x.bs+(x.bm?" ("+(x.bm==="ETC"?(x.bx||"기타"):pick2(BMETH2,x.bm))+")":""):""}
+function lodgeTxt(x){return (x.lodge||"")+(x.tier?(x.lodge?" · ":"")+pick2(TIERS2,x.tier):"")}
+var PRE="c26:", PXMAX=1600, RCMAX=3;
+var CATS=["숙박","식비","짐 이송","교통","봉헌·헌금","약국·의료","세탁","통신","기타"];
+var DEFPM=["현금","카드","기타"];
+var $=function(s){return document.querySelector(s)},
+    $$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))};
+function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function lsSet(k,v){try{localStorage.setItem(k,v);return true}catch(e){return false}}
+function lsDel(k){try{localStorage.removeItem(k)}catch(e){}}
+function lsJ(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
+function dayKey(d){return PRE+"d:"+d}
+function schedKey(){return PRE+"sched"}
+function num(x){var n=parseFloat(String(x==null?"":x).replace(/[^0-9.\-]/g,""));return isNaN(n)?0:n}
+function has(x){return String(x==null?"":x).trim()!==""}
+function ymd(t){return t.getFullYear()+"-"+("0"+(t.getMonth()+1)).slice(-2)+"-"+("0"+t.getDate()).slice(-2)}
+function addDays(d,n){var t=new Date(d+"T12:00");t.setDate(t.getDate()+n);return ymd(t)}
+function wd(d){return "일월화수목금토"[new Date(d+"T12:00").getDay()]}
+function md(d){return d.slice(5).replace("-","/").replace(/^0/,"").replace("/0","/")}
+function eur(v){var r=Math.round(v*100)/100;return (r<0?"−€":"€")+Math.abs(r).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})}
+function won(v){return (v<0?"−₩":"₩")+Math.round(Math.abs(v)).toLocaleString()}
+function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+function qa(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;")}
+function newId(p){return p+Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+function pj(s){if(s==null)return null;if(typeof s!=="string")return s;try{return JSON.parse(s)}catch(e){return null}}
+function stamp(){var t=new Date();return (t.getMonth()+1)+"-"+t.getDate()}
+function durTxt(sec){sec=Math.round(sec||0);return Math.floor(sec/60)+":"+("0"+(sec%60)).slice(-2)}
+
+/* ── 설정 (이 폰) ── */
+var SET=lsJ(PRE+"set",{});
+function rate(){return num(SET.rate)||1740}
+function methods(){return (SET.pm&&SET.pm.length)?SET.pm:DEFPM}
+function toEur(it){var a=num(it.a);return it.u==="KRW"?a/rate():a}
+function dayBudget(){return has(SET.budget)?num(SET.budget):num(SCHED.budget)}
+
+/* ── 일정 ── */
+var SCHED={budget:"",days:[]}, CD=null, cache={}, dirty=false, formBase="null", urlPool=[];
+function defaultSched(){
+ var t=ymd(new Date()),end=addDays(t,29),days=[],d=t;
+ while(d<=end&&days.length<120){days.push({date:d,from:"",to:"",lodge:"",note:""});d=addDays(d,1)}
+ return {budget:"",days:days};
+}
+function sortSched(){SCHED.days.sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:0})}
+function loadSched(){var s=pj(lsGet(schedKey()));if(s&&s.days&&s.days.length){SCHED=s;sortSched();return}
+ SCHED=defaultSched();lsSet(schedKey(),JSON.stringify(SCHED))}
+function saveSched(){sortSched();if(!lsSet(schedKey(),JSON.stringify(SCHED)))ui.alert("일정을 저장하지 못했습니다 — 저장 공간이 부족합니다.")}
+function dates(){return SCHED.days.map(function(x){return x.date})}
+function dayInfo(d){for(var i=0;i<SCHED.days.length;i++)if(SCHED.days[i].date===d)return SCHED.days[i];return null}
+function todayDate(){var t=ymd(new Date()),ds=dates();if(ds.indexOf(t)>=0)return t;
+ for(var i=0;i<ds.length;i++)if(ds[i]>t)return ds[i];return ds[ds.length-1]}
+
+/* ── 기록 ── */
+function allDayKeys(){var a=[];try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(/^c26:d:\d{4}-/.test(k))a.push(k)}}catch(e){}return a}
+function migrate(o,d){if(!o)return null;if(!o.items)o.items=[];
+ o.items.forEach(function(it,k){if(!it.iid)it.iid="i"+String(d||"").replace(/-/g,"")+"_"+k;if(!it.rcs)it.rcs=[]});return o}
+function loadAll(){cache={};
+ allDayKeys().forEach(function(k){var d=k.slice(6);var o=pj(lsGet(k));if(o&&Object.keys(o).length)cache[d]=migrate(o,d)});loadSched()}
+function cur(){return cache[CD]||{items:[]}}
+function isEmpty(o){if((o.items||[]).length)return false;var c=o.cash||{};if(has(c.start)||has(c.add)||has(c.actual))return false;
+ for(var k in o)if(["items","cash"].indexOf(k)<0&&o[k]!==""&&o[k]!=null&&!(typeof o[k]==="object"&&!Object.keys(o[k]).length))return false;return true}
+function totalOf(o){var s=0;(o.items||[]).forEach(function(it){s+=toEur(it)});return s}
+function krwOf(o){var s=0;(o.items||[]).forEach(function(it){if(it.u==="KRW")s+=num(it.a)});return s}
+function sumBy(o,key){var r={};(o.items||[]).forEach(function(it){var k=it[key]||"미지정";r[k]=(r[k]||0)+toEur(it)});return r}
+function cashSpent(o){var s=0;(o.items||[]).forEach(function(it){if(it.pm==="현금"&&it.u!=="KRW")s+=num(it.a)});return s}
+/* 현금 흐름: 시작(직접 / 전날 끝 / 첫날은 출발 현금) + 인출 − 현금 지출 = 계산, 실제를 적으면 그 값이 끝 */
+function cashChain(upto,override){
+ var end=has(SET.cash0)?num(SET.cash0):null,res=null;
+ dates().filter(function(d){return d<=upto}).forEach(function(d){
+  var o=(d===upto&&override)?override:cache[d];o=o||{};var c=o.cash||{};
+  var start=has(c.start)?num(c.start):end,add=num(c.add),spent=cashSpent(o);
+  var calc=start===null?null:start+add-spent;
+  if(d===upto)res={start:start,startAuto:!has(c.start),add:add,spent:spent,calc:calc,actual:has(c.actual)?num(c.actual):null};
+  end=has(c.actual)?num(c.actual):calc});
+ return res||{start:null,startAuto:true,add:0,spent:0,calc:null,actual:null};
+}
+
+/* ── 저장소 (영수증) ── */
+var DB=null;
+function idb(){return new Promise(function(res,rej){
+ if(DB)return res(DB);if(!window.indexedDB)return rej(new Error("no idb"));
+ var q=indexedDB.open("camino26Media",1);
+ q.onupgradeneeded=function(){q.result.createObjectStore("m")};
+ q.onsuccess=function(){DB=q.result;res(DB)};q.onerror=function(){rej(q.error)}})}
+function mput(id,b){return idb().then(function(db){return new Promise(function(res,rej){
+ var tx=db.transaction("m","readwrite");tx.objectStore("m").put(b,id);
+ tx.oncomplete=function(){res()};tx.onerror=function(){rej(tx.error)}})})}
+function mgetLocal(id){return idb().then(function(db){return new Promise(function(res,rej){
+ var tx=db.transaction("m","readonly"),r=tx.objectStore("m").get(id);
+ r.onsuccess=function(){res(r.result||null)};r.onerror=function(){rej(r.error)}})}).catch(function(){return null})}
+function mget(id){return mgetLocal(id)}
+function mdel(id){return idb().then(function(db){return new Promise(function(res){
+ var tx=db.transaction("m","readwrite");tx.objectStore("m").delete(id);
+ tx.oncomplete=function(){res()};tx.onerror=function(){res()}})}).catch(function(){})}
+function shrink(file){return new Promise(function(res){
+ var img=new Image(),u=URL.createObjectURL(file);
+ img.onload=function(){var w=img.width,h=img.height,s=Math.min(1,PXMAX/Math.max(w,h));
+  var c=document.createElement("canvas");c.width=Math.round(w*s)||w;c.height=Math.round(h*s)||h;
+  c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+  c.toBlob(function(b){URL.revokeObjectURL(u);res(b||file)},"image/jpeg",0.78)};
+ img.onerror=function(){URL.revokeObjectURL(u);res(file)};img.src=u})}
+function b64(blob){return new Promise(function(res){var r=new FileReader();
+ r.onload=function(){res(r.result)};r.onerror=function(){res("")};r.readAsDataURL(blob)})}
+
+/* ── 머리말 ── */
+function placeTxt(a,b){return (pn(a)||"…")+" → "+(pn(b)||"…")}
+function refillPick(){
+ $("#pick").innerHTML=SCHED.days.map(function(x){var o=cache[x.date];
+  return '<option value="'+x.date+'">'+md(x.date)+" ("+wd(x.date)+")"+(x.to?" · "+esc(pnShort(x.to)):"")+(o&&(o.items||[]).length?" ✓":"")+'</option>'}).join("");
+ if(CD)$("#pick").value=CD}
+function paintHeader(){
+ var x=dayInfo(CD)||{date:CD};
+ $("#dno").textContent=md(CD);$("#dlabel").textContent="("+wd(CD)+")";
+ var L=[];if(x.from||x.to){var k=dayKm(x);L.push(placeTxt(x.from,x.to)+(k!=null?" · "+f1(k)+"km":""))}
+ if(x.lodge||x.tier)L.push("숙소 "+lodgeTxt(x));if(x.bs)L.push(bookTxt(x));if(x.note)L.push(x.note);
+ $("#place").textContent=L.join(" · ")||"「일정」 탭에서 이 날 출발지·도착지를 고를 수 있습니다";
+ if($("#pick").value!==CD)$("#pick").value=CD;
+ paintTodo();
+}
+var NEWVER=null;
+function paintTodo(){
+ var ex=[],lb=lsGet(PRE+"lastbk"),age=lb?(Date.now()-Date.parse(lb))/864e5:99;
+ if(NEWVER)ex.push('· 새 버전 v'+NEWVER+' 이 올라와 있습니다 <button class="minibtn" data-act="reload">새로고침</button>');
+ if(!/^https?:$/.test(location.protocol))ex.push('· <span class="over">파일로 열려 있습니다.</span> 이 상태에서는 영수증 사진이 남지 않을 수 있습니다. 받은 링크로 여십시오.');
+ if(age>=2&&Object.keys(cache).length)ex.push("· [백업] 마지막 백업 파일 "+(lb?Math.floor(age)+"일 전":"없음")+" — 설정 → 백업 파일 저장");
+ var el=$("#todo");
+ if(!ex.length){el.style.display="none";el.innerHTML=""}else{el.style.display="block";el.innerHTML="<b>알림</b><div>"+ex.join("</div><div>")+"</div>"}
+}
+
+/* ── 지출 항목 ── */
+function itemRow(it){
+ it=it||{c:"식비",a:"",u:"EUR",m:"",pm:methods()[0]};
+ var d=document.createElement("div");d.className="item";
+ var pms=methods().slice();if(it.pm&&pms.indexOf(it.pm)<0)pms.push(it.pm);
+ d.innerHTML='<div class="l1"><select class="cat">'+CATS.map(function(c){return '<option'+(c===it.c?" selected":"")+'>'+c+'</option>'}).join("")+
+  '</select><input class="amt" type="text" inputmode="decimal" placeholder="0" value="'+qa(it.a)+'">'+
+  '<button class="cur" data-u="'+(it.u||"EUR")+'">'+((it.u==="KRW")?"₩":"€")+'</button>'+
+  '<button class="del">×</button></div>'+
+  '<div class="l2"><select class="pm">'+pms.map(function(p){return '<option'+(p===(it.pm||pms[0])?" selected":"")+'>'+esc(p)+'</option>'}).join("")+'</select>'+
+  '<input class="memo" type="text" placeholder="내용 · 장소" value="'+qa(it.m)+'"></div>'+
+  '<div class="rcrow"></div>';
+ d._rcs=(it.rcs||[]).slice();d._orig=it;d.dataset.iid=it.iid||newId("i");
+ paintReceipt(d);return d;
+}
+function paintReceipt(el){
+ var w=el.querySelector(".rcrow");if(!w)return;w.innerHTML="";var L=el._rcs||[];
+ L.forEach(function(rc){var th=document.createElement("div");th.className="rcth";th.dataset.rid=rc.id;
+  th.innerHTML='<button class="x">×</button>';w.appendChild(th);
+  mget(rc.id).then(function(b){if(!b){th.classList.add("noposter");return}
+   var u=URL.createObjectURL(b);urlPool.push(u);var im=document.createElement("img");im.src=u;th.insertBefore(im,th.firstChild)})});
+ if(L.length<RCMAX)w.insertAdjacentHTML("beforeend",'<button class="rcbtn" data-cap="1">📷 영수증</button><button class="rcbtn" data-cap="0">🖼 앨범</button>');
+}
+function pickReceipt(el,cam){
+ var inp=document.createElement("input");inp.type="file";inp.accept="image/*";inp.style.display="none";
+ if(cam)inp.setAttribute("capture","environment");else inp.multiple=true;
+ document.body.appendChild(inp);
+ inp.onchange=function(){
+  var fs=Array.prototype.slice.call(inp.files||[]);inp.remove();if(!fs.length)return;
+  el._rcs=el._rcs||[];var room=RCMAX-el._rcs.length,over=Math.max(0,fs.length-room),added=0,chain=Promise.resolve();
+  fs.slice(0,Math.max(0,room)).forEach(function(f){chain=chain.then(function(){return shrink(f)}).then(function(bl){
+   var id=newId("r");return mput(id,bl).then(function(){el._rcs.push({id:id,sz:bl.size});added++})})});
+  chain.then(function(){paintReceipt(el);if(added)touch();if(over)ui.alert("영수증은 한 항목에 "+RCMAX+"장까지입니다.")})
+   .catch(function(e){paintReceipt(el);if(added)touch();ui.alert("영수증을 저장하지 못했습니다.\n"+((e&&e.name)||""))});
+ };
+ inp.click();
+}
+function openReceipts(startId){
+ var list=[];$$("#items .item").forEach(function(el){var c=el.querySelector(".cat").value,mm=el.querySelector(".memo").value;
+  (el._rcs||[]).forEach(function(rc){list.push({id:rc.id,t:"image",cap:c+(mm?" · "+mm:"")})})});
+ if(!list.length)return;var st=0;list.forEach(function(x,k){if(x.id===startId)st=k});
+ openGallery(list,st,function(m,i,n){return "영수증"+(n>1?"  "+(i+1)+" / "+n:"")});
+}
+$("#additem").onclick=function(){var r=itemRow();$("#items").appendChild(r);touch();r.querySelector(".amt").focus()};
+$("#items").addEventListener("click",function(e){
+ var c=e.target.closest(".cur");
+ if(c){var k=c.dataset.u==="EUR"?"KRW":"EUR";c.dataset.u=k;c.textContent=k==="KRW"?"₩":"€";touch();return}
+ var rb=e.target.closest(".rcbtn");if(rb){pickReceipt(rb.closest(".item"),rb.dataset.cap==="1");return}
+ var rx=e.target.closest(".rcth .x");
+ if(rx){var it0=rx.closest(".item"),rid=rx.closest(".rcth").dataset.rid;
+  ui.confirm("이 영수증을 지울까요?","지우기","그만두기",true).then(function(ok){
+   if(!ok)return;it0._rcs=(it0._rcs||[]).filter(function(r){return r.id!==rid});paintReceipt(it0);touch()});return}
+ var rt=e.target.closest(".rcth");if(rt){openReceipts(rt.dataset.rid);return}
+ var d=e.target.closest(".del");
+ if(d){var row=d.closest(".item");ui.confirm("이 지출 항목을 지울까요?","지우기","그만두기",true).then(function(ok){if(ok){row.remove();touch()}})}});
+$("#items").addEventListener("change",function(){touch()});
+
+/* ── 입력 모으기 · 채우기 (모르는 칸은 저장본에서 이어받아 지우지 않는다) ── */
+function collect(){
+ var keep=cache[CD]||{},o={};
+ Object.keys(keep).forEach(function(k){if(k!=="items"&&k!=="cash")o[k]=JSON.parse(JSON.stringify(keep[k]))});
+ var kc=JSON.parse(JSON.stringify(keep.cash||{}));kc.start=$("#cStart").value.trim();kc.add=$("#cAdd").value.trim();kc.actual=$("#cActual").value.trim();
+ if(Object.keys(kc).some(function(k){return has(kc[k])}))o.cash=kc;
+ o.items=[];
+ $$("#items .item").forEach(function(el){
+  var a=el.querySelector(".amt").value.trim(),rcs=(el._rcs||[]).slice(),m=el.querySelector(".memo").value.trim();
+  if(!a&&!rcs.length&&!m)return;
+  var it=JSON.parse(JSON.stringify(el._orig||{}));
+  it.iid=el.dataset.iid;it.c=el.querySelector(".cat").value;it.a=a;it.u=el.querySelector(".cur").dataset.u;it.pm=el.querySelector(".pm").value;it.m=m;it.rcs=rcs;
+  o.items.push(it)});
+ return o;
+}
+function fillForm(o){
+ urlPool.forEach(function(u){URL.revokeObjectURL(u)});urlPool=[];
+ $("#items").innerHTML="";(o.items||[]).forEach(function(it){$("#items").appendChild(itemRow(it))});
+ var c=o.cash||{};$("#cStart").value=c.start||"";$("#cAdd").value=c.add||"";$("#cActual").value=c.actual||"";
+ refresh();
+}
+function show(d){
+ if(d)CD=d;if(dates().indexOf(CD)<0)CD=todayDate();
+ formBase=JSON.stringify(cache[CD]||null);
+ fillForm(cur());setDirty(false);paintHeader();uiSave();
+}
+
+/* ── 계산 표시 ── */
+function bars(spent,bud,el){
+ if(!bud){el.innerHTML='<span class="dim">1일 예산을 「설정」에서 정하면 비교합니다</span>';return}
+ var left=bud-spent,p=Math.min(100,spent/bud*100),R=rate();
+ el.innerHTML='<div class="bar-outer"><div class="bar-in" style="width:'+p.toFixed(1)+'%;background:'+(left<0?"var(--rust)":"var(--arrow)")+'"></div></div>'+
+  '<div class="bline"><span>1일 예산 '+eur(bud)+'</span><b class="'+(left<0?"over":"ok")+'">'+(left<0?"초과 ":"남음 ")+eur(Math.abs(left))+' · '+won(Math.abs(left)*R)+'</b></div>';
+}
+function refresh(){
+ var o=collect(),t=totalOf(o),k=krwOf(o);
+ $("#total").textContent=eur(t)+" · "+won(t*rate());
+ $("#icount").textContent=o.items.length?o.items.length+"건":"";
+ bars(t,dayBudget(),$("#bud"));
+ var ch=cashChain(CD,o);
+ $("#cStart").placeholder=ch.start!==null&&ch.startAuto?"이어받음 "+ch.start.toFixed(2):"예: 200";
+ var R=[["시작 현금",ch.start===null?"—":eur(ch.start)+(ch.startAuto?" (이어받음)":"")]];if(ch.add)R.push(["+ 인출·환전",eur(ch.add)]);
+ R.push(["− 현금 지출",eur(ch.spent)],["= 계산상 남은 현금",ch.calc===null?"시작 현금 필요":eur(ch.calc)]);
+ $("#cCash").innerHTML=R.map(function(r){return "<tr><td>"+r[0]+"</td><td>"+r[1]+"</td></tr>"}).join("");
+ var df=$("#cDiff");
+ if(ch.actual!==null&&ch.calc!==null){var dv=ch.actual-ch.calc;df.className="diff "+(Math.abs(dv)<0.01?"ok":"over");
+  df.textContent=Math.abs(dv)<0.01?"맞습니다 ✓":"차이 "+(dv>0?"+":"−")+eur(Math.abs(dv))+(dv<0?" — 빠진 현금 지출이 없는지 보십시오":" — 적지 않은 거스름·수입이 있는지 보십시오")}
+ else{df.className="diff";df.textContent=""}
+}
+function daySummary(d,o){
+ var x=dayInfo(d)||{},t=totalOf(o),bud=dayBudget(),L=["["+md(d)+" ("+wd(d)+") Camino 26]"];
+ if(x.from||x.to){var k=dayKm(x);L.push(placeTxt(x.from,x.to)+(k!=null?" · "+f1(k)+"km":"")+(x.lodge||x.tier?" · "+lodgeTxt(x):"")+(x.bs?" · "+bookTxt(x):""))}
+ else if(x.lodge||x.tier||x.bs)L.push([lodgeTxt(x),bookTxt(x)].filter(Boolean).join(" · "));
+ L.push("지출 "+eur(t)+" ("+won(t*rate())+")"+(bud?" · 예산 "+(bud-t<0?"초과 "+eur(t-bud):"남음 "+eur(bud-t)):""));
+ (o.items||[]).forEach(function(it){L.push("  · "+it.c+(it.m?" "+it.m:"")+" "+(it.u==="KRW"?"₩"+num(it.a).toLocaleString():eur(num(it.a)))+(it.pm?" ["+it.pm+"]":""))});
+ var ch=cashChain(d,o===cache[d]?null:o);if(ch.calc!==null)L.push("현금 "+eur(ch.calc)+(ch.actual!==null&&Math.abs(ch.actual-ch.calc)>=0.01?" (실제 "+eur(ch.actual)+")":""));
+ return L.join("\n");
+}
+
+/* ── 변경 · 저장 ── */
+var drT=null,curTab="exp";
+function setDirty(v){dirty=v;if(!v)clearDraft();
+ $("#savebar").classList.toggle("hide",!(v&&curTab==="exp"));
+ $("#st").textContent=v?"저장 안 됨":"저장됨";$("#st").className="state "+(v?"dirty":"saved")}
+function touch(){refresh();setDirty(true);clearTimeout(drT);drT=setTimeout(draftSave,700)}
+$("#p-exp").addEventListener("input",touch);
+function idsOf(o){var s={};if(!o)return s;(o.items||[]).forEach(function(it){(it.rcs||[]).forEach(function(r){if(r&&r.id)s[r.id]=1})});return s}
+function saveNow(){
+ var o=collect(),d=CD,stored=cache[d]||null,base=pj(formBase),key=dayKey(d),ok=true;
+ var keep=idsOf(o),gone=Object.keys(idsOf(stored)).concat(Object.keys(idsOf(base)));
+ if(isEmpty(o)){lsDel(key);delete cache[d]}else{ok=lsSet(key,JSON.stringify(o));if(ok)cache[d]=o}
+ if(!ok){ui.alert("저장하지 못했습니다 — 기기의 저장 공간이 부족합니다.\n설정 → 백업 파일 저장을 먼저 해 두십시오.");return}
+ gone.forEach(function(id){if(!keep[id])mdel(id)});
+ formBase=JSON.stringify(cache[d]||null);setDirty(false);refillPick();paintTodo();
+}
+function nav(go){if(!dirty){go();return}
+ ui.confirm("이 날짜에 저장하지 않은 변경이 있습니다.","저장하고 이동","저장 없이 이동").then(function(ok){if(ok)saveNow();else setDirty(false);go()})}
+$("#doSave").onclick=saveNow;
+$("#undo").onclick=function(){ui.confirm("고친 내용을 버리고 저장된 상태로 되돌립니다.","되돌리기","그만두기",true).then(function(ok){if(ok){setDirty(false);show(CD)}})};
+$("#prev").onclick=function(){var ds=dates(),i=ds.indexOf(CD);if(i>0)nav(function(){show(ds[i-1])})};
+$("#next").onclick=function(){var ds=dates(),i=ds.indexOf(CD);if(i<ds.length-1)nav(function(){show(ds[i+1])})};
+$("#pick").onchange=function(e){var v=e.target.value;e.target.value=CD;nav(function(){show(v)})};
+function copyText(t){if(navigator.clipboard)navigator.clipboard.writeText(t).catch(function(){})}
+function shareText(t){if(navigator.share)navigator.share({text:t}).catch(function(){});else{copyText(t);ui.alert("복사했습니다.")}}
+$("#shareDay").onclick=function(){shareText(daySummary(CD,collect()))};
+function draftSave(){if(!dirty||!CD)return;lsSet(PRE+"draft",JSON.stringify({d:CD,at:Date.now(),v:collect(),base:formBase}))}
+function clearDraft(){clearTimeout(drT);lsDel(PRE+"draft")}
+function uiSave(){if(!CD)return;lsSet(PRE+"ui",JSON.stringify({t:curTab,d:CD,y:window.scrollY||0,at:Date.now()}))}
+
+/* ── 일정 탭 ── */
+function paintSched(full){
+ $("#sCount").textContent=SCHED.days.length+"일";
+ var ds=dates();if(ds.length&&(full||!$("#sFrom").value)){$("#sFrom").value=ds[0];$("#sTo").value=ds[ds.length-1]}
+ paintRoute();var pc=0;
+ $("#sList").innerHTML=SCHED.days.map(function(x){var o=cache[x.date],k=dayKm(x);if(k!=null)pc+=k;
+  return '<div class="srow" data-d="'+x.date+'"><div class="sd"><b>'+md(x.date)+'</b><span>'+wd(x.date)+'</span></div>'+
+   '<div class="sm"><div>'+(x.from||x.to?esc(placeTxt(x.from,x.to)):'<span class="dim">장소 미정</span>')+'</div>'+
+   '<div class="ss">'+[k!=null?'<span class="cum">'+f1(k)+'km · 누적 '+f1(pc)+'km</span>':"",x.lodge||x.tier?esc(lodgeTxt(x)):"",x.bs?esc(bookTxt(x)):"",o&&(o.items||[]).length?"지출 "+eur(totalOf(o)):""].filter(Boolean).join(" · ")+'</div></div></div>'}).join("");
+}
+$("#sList").addEventListener("click",function(e){var r=e.target.closest(".srow");if(r)editDay(r.dataset.d)});
+function townOpts(cur,from){
+ var L=routeTowns(),hit=false,h='<option value="">— 고르기 —</option>',o=from?townByName(from,L):null,i0=o?L.indexOf(o)+1:0;
+ if(!from)L=L.slice(0,-1);
+ L.slice(i0).forEach(function(t){var sel=(t.es===cur);if(sel)hit=true;var k=o?"+"+f1(t.km-o.km)+"km":t.km.toFixed(1);
+  h+='<option value="'+qa(t.es)+'"'+(sel?" selected":"")+'>'+esc(t.ko)+' ('+esc(t.es)+') · '+k+'</option>'});
+ if(o&&cur&&!hit&&townByName(cur,routeTowns()))cur="";
+ h+='<option value="@"'+(cur&&!hit?" selected":"")+'>✎ 목록에 없음 · 직접 입력</option>';return {h:h,hit:hit,cur:cur}}
+function prevTo(d){var p=null;SCHED.days.forEach(function(y){if(y.date<d&&y.to)p=y.to});return p}
+function editDay(d){
+ var x=dayInfo(d);if(!x)return;
+ var f0=x.from||(!x.to&&prevTo(d))||"",A=townOpts(f0,null),B=townOpts(x.to,A.hit?f0:null),t0=B.cur||"";
+ function sel(id,list,cur){return '<select id="'+id+'">'+list.map(function(o){return '<option value="'+qa(o[0])+'"'+(o[0]===(cur||"")?" selected":"")+'>'+esc(o[1])+'</option>'}).join("")+'</select>'}
+ var m=document.createElement("div");m.className="mask";
+ m.innerHTML='<div class="modal tall"><div class="msg"><b>'+md(d)+' ('+wd(d)+') 일정</b></div>'+
+  '<label class="fld2"><span>출발지 <i class="dim">(숫자: 생장에서 km)</i></span><select id="e1s">'+A.h+'</select><input id="e1" class="'+(f0&&!A.hit?"":"hide")+'" placeholder="출발지 직접 입력" value="'+qa(A.hit?"":f0)+'"></label>'+
+  '<label class="fld2"><span>도착지 <i class="dim">(숫자: 출발지에서 km)</i></span><select id="e2s">'+B.h+'</select><input id="e2" class="'+(t0&&!B.hit?"":"hide")+'" placeholder="도착지 직접 입력" value="'+qa(B.hit?"":t0)+'"></label>'+
+  '<div class="kmline" id="ekm"></div>'+
+  '<div class="row2"><label class="fld2"><span>숙소 유형</span>'+sel("et",TIERS2,x.tier)+'</label><label class="fld2"><span>숙소 이름</span><input id="e3" value="'+qa(x.lodge)+'"></label></div>'+
+  '<div class="row2"><label class="fld2"><span>예약 상태</span>'+sel("ebs",BOOK2,x.bs)+'</label><label class="fld2"><span>예약 방법</span>'+sel("ebm",BMETH2,x.bm)+'</label></div>'+
+  '<input id="ebx" class="'+(x.bm==="ETC"?"":"hide")+'" placeholder="예약 방법 직접 입력 (예: 전화)" value="'+qa(x.bx||"")+'" style="margin:-4px 0 10px">'+
+  '<label class="fld2"><span>메모</span><input id="e5" value="'+qa(x.note)+'"></label>'+
+  '<div class="btns"><button data-a="del" class="dgr">날짜 삭제</button><button data-a="no">취소</button><button class="pri" data-a="yes">저장</button></div></div>';
+ document.body.appendChild(m);
+ function q(id){return m.querySelector("#"+id)}
+ function v(id){return q(id).value.trim()}
+ function place(n){var s=q("e"+n+"s").value;return s==="@"?v("e"+n):s}
+ function km(){var a=place(1),b=place(2),k=(a&&b)?legKm(a,b):null;q("ekm").textContent=k!=null?"거리 약 "+f1(k)+" km (참고값)":""}
+ [1,2].forEach(function(n){q("e"+n+"s").onchange=function(){var on=q("e"+n+"s").value==="@";q("e"+n).classList.toggle("hide",!on);if(on)q("e"+n).focus();
+  if(n===1){var a=q("e1s").value,cu=place(2),R=townOpts(cu,a&&a!=="@"?a:null);q("e2s").innerHTML=R.h;
+   if(!R.hit&&!R.cur){q("e2s").value="";q("e2").value="";q("e2").classList.add("hide")}}
+  km()};q("e"+n).oninput=km});
+ q("ebm").onchange=function(){var on=q("ebm").value==="ETC";q("ebx").classList.toggle("hide",!on);if(on)q("ebx").focus()};
+ km();
+ m.querySelector("[data-a=no]").onclick=function(){m.remove()};
+ m.querySelector("[data-a=yes]").onclick=function(){x.from=place(1);x.to=place(2);x.lodge=v("e3");x.note=v("e5");
+  x.tier=v("et");x.bs=v("ebs");x.bm=v("ebm");x.bx=x.bm==="ETC"?v("ebx"):"";["tier","bs","bm","bx"].forEach(function(k){if(!x[k])delete x[k]});
+  m.remove();saveSched();paintSched();refillPick();if(d===CD)paintHeader()};
+ m.querySelector("[data-a=del]").onclick=function(){
+  if(cache[d]){ui.alert("이 날에는 지출 기록이 있어 지울 수 없습니다.");return}
+  if(SCHED.days.length<2){ui.alert("날짜가 하나뿐이라 지울 수 없습니다.");return}
+  SCHED.days=SCHED.days.filter(function(y){return y.date!==d});m.remove();saveSched();paintSched();refillPick();if(d===CD)show(todayDate())};
+}
+function paintRoute(){
+ var ch=routeChoice();
+ $("#rVars").innerHTML=Object.keys(R_VAR).map(function(k){var V=R_VAR[k];
+  return '<label class="fld2"><span>'+esc(V.name)+'</span><select data-v="'+k+'">'+Object.keys(V.opts).map(function(j){
+   return '<option value="'+j+'"'+(ch[k]===j?" selected":"")+'>'+esc(V.opts[j].label)+'</option>'}).join("")+'</select></label>'}).join("");
+ var L=routeTowns();$("#rSum").textContent="선택한 경로 전체 약 "+L[L.length-1].km.toFixed(0)+" km";
+ $("#rSrc").textContent="거리 출처 — "+ROUTE_SRC+". 마을 사이를 더한 값이라 표지판과 몇백 m씩 다를 수 있습니다.";
+ var S=standardStages(),c0=$("#rStart").value;
+ $("#rStart").innerHTML=S.slice(0,-1).map(function(es,i){return '<option value="'+i+'">'+(i+1)+'일차 · '+esc(pnShort(es))+'</option>'}).join("");
+ if(c0)$("#rStart").value=c0;if(!$("#rDate").value)$("#rDate").value=dates()[0]||ymd(new Date());
+}
+$("#rVars").addEventListener("change",function(e){var k=e.target.dataset.v;if(!k)return;
+ SET.route=SET.route||{};SET.route[k]=e.target.value;lsSet(PRE+"set",JSON.stringify(SET));paintSched();refillPick();paintHeader()});
+$("#rFill").onclick=function(){
+ var S=standardStages(),i0=+$("#rStart").value||0,d0=$("#rDate").value;
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(d0)){ui.alert("시작 날짜를 골라 주십시오.");return}
+ var plan=[],d=d0;for(var i=i0;i<S.length-1;i++){plan.push({date:d,from:S[i],to:S[i+1]});d=addDays(d,1)}
+ var add=0,fill=0,skip=0;plan.forEach(function(p){var x=dayInfo(p.date);if(!x)add++;else if(x.from||x.to)skip++;else fill++});
+ ui.confirm(md(plan[0].date)+"부터 "+plan.length+"일 동안 하루 한 단계씩 채웁니다.\n· 새로 만드는 날 "+add+"일\n· 채우는 날 "+fill+"일\n· 이미 적힌 날 "+skip+"일 → 그대로","채우기","그만두기").then(function(ok){
+  if(!ok)return;
+  plan.forEach(function(p){var x=dayInfo(p.date);if(!x){SCHED.days.push({date:p.date,from:p.from,to:p.to,lodge:"",note:""});return}if(!x.from&&!x.to){x.from=p.from;x.to=p.to}});
+  saveSched();paintSched(true);refillPick();paintHeader();ui.alert("채웠습니다. 날짜 줄을 눌러 실제 계획에 맞게 고치십시오.")})};
+$("#sAdd").onclick=function(){
+ var last=SCHED.days.length?SCHED.days[SCHED.days.length-1].date:ymd(new Date());
+ ui.prompt("추가할 날짜 (YYYY-MM-DD)",addDays(last,1),"추가").then(function(v){
+  if(v===null)return;v=v.trim();
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(v)||isNaN(Date.parse(v))){ui.alert("날짜 형식이 맞지 않습니다. 예: 2026-11-01");return}
+  if(dayInfo(v)){ui.alert("이미 있는 날짜입니다.");return}
+  SCHED.days.push({date:v,from:"",to:"",lodge:"",note:""});saveSched();paintSched();refillPick()})};
+$("#sRange").onclick=function(){
+ var f=$("#sFrom").value,t=$("#sTo").value;
+ if(!f||!t||f>t){ui.alert("시작일과 마지막 날을 확인해 주십시오.");return}
+ var n=0,d=f,cnt=0;while(d<=t&&cnt<200){cnt++;if(!dayInfo(d)){SCHED.days.push({date:d,from:"",to:"",lodge:"",note:""});n++}d=addDays(d,1)}
+ if(cnt>=200){ui.alert("한 번에 200일까지 만들 수 있습니다.");return}
+ var drop=SCHED.days.filter(function(x){return (x.date<f||x.date>t)&&!cache[x.date]&&!x.from&&!x.to&&!x.lodge&&!x.note});
+ SCHED.days=SCHED.days.filter(function(x){return drop.indexOf(x)<0});
+ saveSched();paintSched(true);refillPick();if(dates().indexOf(CD)<0)show(todayDate());else paintHeader();
+ ui.alert("일정을 "+md(f)+"~"+md(t)+"로 맞췄습니다.\n새로 만든 날 "+n+"일 · 비어 있어 뺀 날 "+drop.length+"일")};
+
+/* ── 탭 ── */
+function goTab(t){
+ $$(".tabbar button").forEach(function(x){x.setAttribute("aria-selected",String(x.dataset.t===t))});
+ ["exp","sched","set"].forEach(function(p){$("#p-"+p).classList.toggle("hide",p!==t)});
+ $("#hdr").classList.toggle("hide",t!=="exp");
+ curTab=t;setDirty(dirty);
+ if(t==="sched")paintSched(true);if(t==="set")paintSettings();
+ window.scrollTo(0,0);uiSave();
+}
+$$(".tabbar button").forEach(function(b){b.onclick=function(){goTab(b.dataset.t)}});
+
+var ui=(function(){
+ function open(html,wire){
+  var m=document.createElement("div");m.className="mask";
+  m.innerHTML='<div class="modal">'+html+'</div>';
+  document.body.appendChild(m);
+  var inp=m.querySelector("input");
+  if(inp)setTimeout(function(){try{inp.focus()}catch(e){}},60);
+  m.addEventListener("click",function(e){if(e.target===m)close(m)});
+  wire(m,function(){close(m)});
+  return m;
+ }
+ function close(m){if(m&&m.parentNode)m.parentNode.removeChild(m)}
+ function esc(t){return String(t==null?"":t).replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+ return {
+  choose:function(msg,labels){return new Promise(function(res){
+   var m=document.createElement("div");m.className="mask";
+   m.innerHTML='<div class="modal"><div class="msg">'+esc(msg)+'</div><div class="btns">'+
+    labels.map(function(l,i){return '<button class="pri" data-i="'+i+'">'+esc(l)+'</button>'}).join("")+'</div></div>';
+   document.body.appendChild(m);
+   m.addEventListener("click",function(e){var b=e.target.closest("button[data-i]");if(!b)return;m.remove();res(+b.dataset.i)})})},
+  alert:function(msg,okLabel){return new Promise(function(res){
+   open('<div class="msg">'+esc(msg)+'</div><div class="btns">'+
+    '<button class="pri" data-a="ok">'+(okLabel||"확인")+'</button></div>',
+    function(m,cl){m.querySelector('[data-a=ok]').onclick=function(){cl();res()}})})},
+  confirm:function(msg,yes,no,danger){return new Promise(function(res){
+   open('<div class="msg">'+esc(msg)+'</div><div class="btns">'+
+    '<button data-a="no">'+(no||"취소")+'</button>'+
+    '<button class="'+(danger?"dgr":"pri")+'" data-a="yes">'+(yes||"확인")+'</button></div>',
+    function(m,cl){
+     m.querySelector('[data-a=yes]').onclick=function(){cl();res(true)};
+     m.querySelector('[data-a=no]').onclick=function(){cl();res(false)}})})},
+  prompt:function(msg,val,yes){return new Promise(function(res){
+   open('<div class="msg">'+esc(msg)+'</div><input type="text" value="'+
+    String(val==null?"":val).replace(/"/g,"&quot;")+'"><div class="btns">'+
+    '<button data-a="no">취소</button><button class="pri" data-a="yes">'+(yes||"저장")+'</button></div>',
+    function(m,cl){
+     var i=m.querySelector("input");
+     m.querySelector('[data-a=yes]').onclick=function(){var v=i.value;cl();res(v)};
+     m.querySelector('[data-a=no]').onclick=function(){cl();res(null)};
+     i.addEventListener("keydown",function(e){if(e.key==="Enter"){var v=i.value;cl();res(v)}})})})}
+ };
+})();
+function openGallery(list,start,titleOf){
+ var idx2=start||0;
+ var v=document.createElement("div");v.className="viewer";
+ v.innerHTML='<div class="vhead"><span class="vt"></span><button aria-label="닫기">×</button></div>'+
+  '<div class="vbody">'+
+   '<button class="vnav prev" aria-label="이전">‹</button>'+
+   '<div class="vslot"></div>'+
+   '<button class="vnav next" aria-label="다음">›</button>'+
+  '</div><div class="vdots"></div><div class="vcap"></div>';
+ document.body.appendChild(v);
+ var urls=[];
+ function rel(){urls.forEach(function(u){try{URL.revokeObjectURL(u)}catch(e){}});urls=[]}
+ function close(){rel();if(v.parentNode)v.parentNode.removeChild(v)}
+ v.querySelector("button[aria-label=닫기]").onclick=close;
+ v.addEventListener("click",function(e){
+  if(e.target===v||e.target.className==="vbody"||e.target.className==="vslot")close()});
+ var prev=v.querySelector(".vnav.prev"),next=v.querySelector(".vnav.next");
+ prev.onclick=function(e){e.stopPropagation();go(idx2-1)};
+ next.onclick=function(e){e.stopPropagation();go(idx2+1)};
+ // 좌우 스와이프
+ var sx=null;
+ v.addEventListener("touchstart",function(e){if(e.touches.length===1)sx=e.touches[0].clientX},{passive:true});
+ v.addEventListener("touchend",function(e){
+  if(sx===null)return;var dx=(e.changedTouches[0].clientX)-sx;sx=null;
+  if(Math.abs(dx)<50)return; go(dx<0?idx2+1:idx2-1)},{passive:true});
+ function dots(){
+  if(list.length<2){v.querySelector(".vdots").innerHTML="";return}
+  v.querySelector(".vdots").innerHTML=list.map(function(_,k){
+   return '<i class="'+(k===idx2?"on":"")+'"></i>'}).join("");
+ }
+ function go(k){
+  if(k<0||k>=list.length)return;
+  idx2=k;render2();
+ }
+ function render2(){
+  var m=list[idx2];if(!m)return;
+  rel();
+  prev.disabled=(idx2<=0); next.disabled=(idx2>=list.length-1);
+  prev.style.display=next.style.display=(list.length>1?"flex":"none");
+  var t=titleOf?titleOf(m,idx2,list.length):
+   ((m.t==="video"?"동영상 "+durTxt(m.dur):"사진")+(list.length>1?"  "+(idx2+1)+" / "+list.length:""));
+  v.querySelector(".vt").textContent=t;
+  v.querySelector(".vcap").innerHTML=m.cap?String(m.cap).replace(/</g,"&lt;")
+   :'<span style="opacity:.6">설명 없음</span>';
+  dots();
+  var slot=v.querySelector(".vslot");slot.innerHTML="";
+  mget(m.id).then(function(b){
+   if(!b){slot.innerHTML='<span style="color:#777">불러오지 못했습니다</span>';return}
+   var u=URL.createObjectURL(b);urls.push(u);
+   var el;
+   if(m.t==="video"){
+    el=document.createElement("video");
+    el.src=u;el.controls=true;el.autoplay=true;el.playsInline=true;
+    el.setAttribute("playsinline","");el.setAttribute("controls","");
+    if(m.pid)mget(m.pid).then(function(pb){if(pb){var pu=URL.createObjectURL(pb);urls.push(pu);el.poster=pu}});
+   }else{el=document.createElement("img");el.src=u;el.alt=m.cap||""}
+   slot.appendChild(el);
+   if(m.t==="video"){var pr=el.play();if(pr&&pr.catch)pr.catch(function(){})}
+  });
+ }
+ render2();
+}
+/* ── 화면 상태 · 작성 중 보관 ── */
+document.addEventListener("visibilitychange",function(){if(document.visibilityState==="hidden"){draftSave();uiSave()}else checkVersion()});
+window.addEventListener("pagehide",function(){draftSave();uiSave()});
+window.addEventListener("beforeunload",function(){draftSave()});
+
+/* ── 파일 주고받기 ── */
+function dl(blob,name){var u=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=u;a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(u);a.remove()},120000)}
+function shareBlob(blob,name,okMsg,onDone){
+ var file=null;try{file=new File([blob],name,{type:blob.type||"application/octet-stream"})}catch(e){}
+ function fallback(){dl(blob,name);if(onDone)onDone();ui.alert(okMsg)}
+ if(file&&navigator.canShare&&navigator.share){var ok=false;try{ok=navigator.canShare({files:[file]})}catch(e){}
+  if(ok){navigator.share({files:[file],title:name}).then(function(){if(onDone)onDone()}).catch(function(e){if(e&&e.name==="AbortError")return;fallback()});return}}
+ fallback();
+}
+
+/* ── 백업 (영수증 포함, 한 파일) ── */
+function receiptIds(){var L=[];Object.keys(cache).forEach(function(d){(cache[d].items||[]).forEach(function(it){(it.rcs||[]).forEach(function(r){if(r&&r.id)L.push(r.id)})})});return L}
+$("#fullBk").onclick=function(){
+ if(dirty){ui.alert("저장하지 않은 변경이 있습니다.\n지출 탭에서 먼저 「저장」을 누르십시오.");return}
+ var b=$("#fullBk"),LBL="백업 파일 저장 (영수증 포함)";b.disabled=true;b.textContent="만드는 중…";
+ var head={v:1,kind:"camino26",at:new Date().toISOString(),app:C26VER,set:SET,sched:SCHED,days:cache};
+ var hs=JSON.stringify(head);
+ var acc=new Blob([hs.slice(0,-1)+',"blobs":{'],{type:"application/json"}),ids=receiptIds(),n=0,miss=0,chain=Promise.resolve();
+ ids.forEach(function(id){chain=chain.then(function(){return mgetLocal(id)}).then(function(bl){
+  b.textContent="영수증 "+(n+miss+1)+"/"+ids.length;
+  if(!bl){miss++;return}
+  return b64(bl).then(function(u){acc=new Blob([acc,(n?",":"")+JSON.stringify(id)+":"+JSON.stringify(u)],{type:"application/json"});n++})})});
+ chain.then(function(){
+  acc=new Blob([acc,"}}"],{type:"application/json"});
+  b.disabled=false;b.textContent=LBL;
+  var name="camino26_backup_"+stamp()+".json";
+  shareBlob(acc,name,"백업 파일을 받았습니다 ("+(acc.size/1048576).toFixed(1)+"MB · 영수증 "+n+"장"+(miss?" · 없는 영수증 "+miss+"장":"")+").\n다운로드에서 「파일에 저장」으로 iCloud Drive에 옮겨 두십시오.",
+   function(){lsSet(PRE+"lastbk",new Date().toISOString());paintTodo();paintSettings()});
+ }).catch(function(){b.disabled=false;b.textContent=LBL;ui.alert("백업 파일을 만들지 못했습니다.")});
+};
+$("#restoreBtn").onclick=function(){$("#fRestore").click()};
+$("#fRestore").onchange=function(e){
+ var f=e.target.files&&e.target.files[0];e.target.value="";if(!f)return;
+ var r=new FileReader();r.onload=function(){
+  var pack=pj(r.result);r=null;
+  if(!pack||pack.kind!=="camino26"){ui.alert("Camino 26 백업 파일이 아닙니다.");return}
+  ui.confirm("백업 파일을 불러옵니다.\n파일에 있는 날짜는 파일 내용으로 바뀌고, 나머지는 그대로입니다.","불러오기","그만두기").then(function(ok){
+   if(!ok)return;
+   var blobs=pack.blobs||{},n=0,m=0,chain=Promise.resolve();
+   Object.keys(blobs).forEach(function(id){chain=chain.then(function(){
+    return fetch(blobs[id]).then(function(x){return x.blob()}).then(function(bl){return mput(id,bl)}).then(function(){m++}).catch(function(){})})});
+   chain.then(function(){
+    Object.keys(pack.days||{}).forEach(function(d){if(!/^\d{4}-\d{2}-\d{2}$/.test(d)||!pack.days[d])return;lsSet(dayKey(d),JSON.stringify(pack.days[d]));n++});
+    if(pack.sched&&pack.sched.days&&pack.sched.days.length)lsSet(schedKey(),JSON.stringify(pack.sched));
+    if(pack.set){SET=pack.set;lsSet(PRE+"set",JSON.stringify(SET))}
+    loadAll();refillPick();show(dates().indexOf(CD)>=0?CD:todayDate());paintSettings();
+    ui.alert("불러왔습니다.\n기록 "+n+"일 · 영수증 "+m+"장");
+   });
+  });
+ };
+ r.readAsText(f);
+};
+function reportText(){
+ var ds=Object.keys(cache).sort(),t=0,n=0;ds.forEach(function(d){var x=totalOf(cache[d]);if((cache[d].items||[]).length){t+=x;n++}});
+ var km=0;SCHED.days.forEach(function(x){if(x.date<=ymd(new Date())){var k=dayKm(x);if(k!=null)km+=k}});
+ return "[Camino 26 여행 요약]\n기록 "+n+"일 · 합계 "+eur(t)+" (≈ "+won(t*rate())+")"+(n?" · 하루 평균 "+eur(t/n):"")+(km?"\n계획 거리 누적 약 "+f1(km)+"km":"")+"\n\n"+
+  ds.map(function(d){return daySummary(d,cache[d])}).join("\n\n")+"\n\n(Camino 26 Lite v"+C26VER+")";
+}
+$("#rptBk").onclick=function(){shareText(reportText())};
+$("#fbBtn").onclick=function(){
+ var m=document.createElement("div");m.className="mask";
+ m.innerHTML='<div class="modal tall"><div class="msg"><b>의견 보내기</b>\n불편한 점, 오류, 바라는 기능을 적어 주십시오. 「보내기」를 누르면 메시지·메일 앱을 고를 수 있습니다.</div>'+
+  '<textarea id="fbT" style="min-height:160px"></textarea><div class="btns" style="margin-top:12px"><button data-a="no">취소</button><button class="pri" data-a="yes">보내기</button></div></div>';
+ document.body.appendChild(m);m.querySelector("#fbT").value=lsGet(PRE+"fb")||"";
+ m.querySelector("[data-a=no]").onclick=function(){lsSet(PRE+"fb",m.querySelector("#fbT").value.trim());m.remove()};
+ m.querySelector("[data-a=yes]").onclick=function(){var v=m.querySelector("#fbT").value.trim();lsSet(PRE+"fb",v);m.remove();
+  if(v)shareText("[Camino 26 Lite 의견 · v"+C26VER+"]\n"+v)};
+};
+
+/* ── 설정 ── */
+var PERSIST="확인 중",SWST="확인 중";
+function paintSettings(){
+ function fv(id,v){if(document.activeElement!==$(id))$(id).value=v==null?"":v}
+ fv("#setBudget",SET.budget||SCHED.budget||"");fv("#setCash0",SET.cash0||"");fv("#setRate",SET.rate||"1740");fv("#setPm",methods().join(", "));
+ var ds=Object.keys(cache).filter(function(d){return (cache[d].items||[]).length}),t=0,pm={};
+ ds.forEach(function(d){t+=totalOf(cache[d]);var p=sumBy(cache[d],"pm");for(var k in p)pm[k]=(pm[k]||0)+p[k]});
+ var b=dayBudget(),bs=b*ds.length,R=[["기록한 날",ds.length+"일"],["지출 합계",eur(t)+" · "+won(t*rate())],["하루 평균",ds.length?eur(t/ds.length):"—"]];
+ if(b)R.push(["예산 대비 ("+ds.length+"일 × "+eur(b)+")",(t<=bs?"남음 ":"초과 ")+eur(Math.abs(bs-t))]);
+ Object.keys(pm).sort(function(a,c){return pm[c]-pm[a]}).forEach(function(k){R.push([" · "+k,eur(pm[k])])});
+ $("#tSum").innerHTML=R.map(function(r){return "<tr><td>"+esc(r[0])+"</td><td>"+r[1]+"</td></tr>"}).join("");
+ var lb=lsGet(PRE+"lastbk");
+ $("#bkst").textContent="기록 "+Object.keys(cache).length+"일 · 영수증 "+receiptIds().length+"장\n마지막 백업 파일: "+(lb?new Date(lb).toLocaleString("ko-KR"):"없음");
+ $("#appst").textContent="Camino 26 Lite v"+C26VER+" ("+APPDATE+")"+(NEWVER?" · 새 버전 v"+NEWVER+" 있음":"")+
+  "\n여는 방식: "+(/^https?:$/.test(location.protocol)?"링크(정상)":"파일 — 영수증 사진이 남지 않을 수 있음")+
+  "\n오프라인 실행: "+SWST+"\n개인 정보와 기록은 어디로도 전송되지 않습니다.";
+ $("#verlbl").textContent="Camino 26 Lite v"+C26VER;
+}
+$("#setSave").onclick=function(){
+ var r=num($("#setRate").value),pm=$("#setPm").value.split(/[,，]/).map(function(s){return s.trim()}).filter(Boolean);
+ if(!r){ui.alert("환율을 숫자로 넣어 주십시오.");return}
+ if(pm.indexOf("현금")<0)pm.unshift("현금");
+ SET.rate=String(r);SET.pm=pm;SET.budget=$("#setBudget").value.trim();SET.cash0=$("#setCash0").value.trim();lsSet(PRE+"set",JSON.stringify(SET));
+ paintSettings();if(!dirty)show(CD);else refresh();
+ ui.alert("저장했습니다.\n「현금」은 현금 점검에 쓰이므로 결제 수단에 항상 남습니다.")};
+
+/* ── 새 버전 알림 (링크로 열었을 때) ── */
+function vcmp(a,b){var x=String(a).split("."),y=String(b).split(".");
+ for(var i=0;i<Math.max(x.length,y.length);i++){var d=(+x[i]||0)-(+y[i]||0);if(d)return d>0?1:-1}return 0}
+function checkVersion(){
+ if(!navigator.onLine||!/^https?:$/.test(location.protocol))return;
+ fetch(location.pathname+"?vc="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){
+  var m=/var C26VER="([\d.]+)"/.exec(t);if(m&&vcmp(m[1],C26VER)>0){NEWVER=m[1];paintTodo()}}).catch(function(){});
+}
+$("#todo").addEventListener("click",function(e){if(!e.target.closest("[data-act=reload]"))return;
+ nav(function(){location.replace(location.pathname+"?v="+NEWVER)})});
+
+/* ── 저장소 보존 · 오프라인 실행 ── */
+try{
+ if(navigator.storage&&navigator.storage.persist){
+  (navigator.storage.persisted?navigator.storage.persisted():Promise.resolve(false)).then(function(p){
+   if(p){PERSIST="허용됨";return}return navigator.storage.persist().then(function(g){PERSIST=g?"허용됨":"브라우저가 보류"})}).catch(function(){PERSIST="지원 안 함"});
+ }else PERSIST="지원 안 함";
+}catch(e){PERSIST="지원 안 함"}
+if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost")){
+ navigator.serviceWorker.register("camino26-sw.js").then(function(){SWST="켜짐"}).catch(function(){SWST="없음 (통신될 때만 열림)"});
+}else SWST="해당 없음";
+
+/* ── 시작 ── */
+(function(){
+ loadAll();refillPick();
+ var dr=lsJ(PRE+"draft",null),u=lsJ(PRE+"ui",null),start=null,tab="exp",y=0;
+ if(u&&Date.now()-u.at<6*3600e3){start=u.d;tab=({exp:"exp",sched:"sched",plan:"sched",set:"set"})[u.t]||"exp";y=u.y||0}
+ var drOk=dr&&dr.v&&dates().indexOf(dr.d)>=0;
+ if(drOk){start=dr.d;tab="exp"}
+ CD=(start&&dates().indexOf(start)>=0)?start:todayDate();
+ show(CD);
+ if(drOk){fillForm(dr.v);formBase=dr.base||formBase;setDirty(true);lsSet(PRE+"draft",JSON.stringify(dr));
+  ui.alert("저장하지 않았던 "+md(dr.d)+" 지출을 되살렸습니다.\n확인하고 「저장」을 누르십시오.")}
+ goTab(tab);
+ if(y)setTimeout(function(){window.scrollTo(0,y)},60);
+ checkVersion();
+})();
+
+</script>
+</body>
+</html>
